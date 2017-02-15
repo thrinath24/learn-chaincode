@@ -321,6 +321,21 @@ func (t *SimpleChaincode) View_order(stub shim.ChaincodeStubInterface, args []st
 		//t.init_logistics(stub,orders.OpenOrders[0].OrderId, containerIndex[0])
 		ordersAsBytes,_ = json.Marshal(orders)
 		stub.PutState(openOrdersStr,ordersAsBytes)
+		
+		OrderID := orders.OpenOrders[0].OrderID
+		orderAsBytes, err := stub.GetState(OrderID)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	ShipOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &ShipOrder)
+	
+	ShipOrder.Status = "Ready to be Shipped"
+	 
+	orderAsBytes,err = json.Marshal(ShipOrder)
+	
+	stub.PutState(OrderID,orderAsBytes)
+		
 		//t.read(stub,openOrdersStr)
 	}else{
                 stub.PutState("sorry",[]byte("we couldn't find a product for your choice of requirements"))
