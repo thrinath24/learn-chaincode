@@ -118,7 +118,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
 		return t.Create_milkcontainer(stub, args)      
-	}
+	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.Create_coin(stub, args)	
+        }
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation: " + function)
