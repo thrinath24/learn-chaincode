@@ -14,6 +14,11 @@ import (
 type SimpleChaincode struct {
 }
 
+var containerIndexStr = "_containerindex"    //This will be used as key and a value will be an array of Container IDs	
+
+var openOrdersStr = "_openorders"	  // This will be the key, value will be a list of orders(technically - array of order structs)
+
+
 
 type MilkContainer struct{
 
@@ -25,12 +30,29 @@ type MilkContainer struct{
 }
 
 
+
 type SupplyCoin struct{
 
         CoinID string `json:"coinid"`
         User string        `json:"user"`
 }
 
+type Order struct{
+        OrderID string `json:"orderid"`
+       User string `json:"user"`
+       Status string `json:"status"`
+       Litres string    `json:"litres"`
+}
+
+type AllOrders struct{
+	OpenOrders []Order `json:"open_orders"`
+}
+
+type Asset struct{
+	  User string        `json:"user"`
+	containerIDs []string `json:"containerids"`
+	coinIds []string `json:"coinids"`
+}
 
 
 
@@ -46,18 +68,42 @@ func main() {
 
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+	
 	var err error
 
-	if len(args) != 1 {
+       if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
-                                                          
-}
+       }
 
-       err = stub.PutState("hello world",[]byte(args[0]))  //Just to check the network 
+       err = stub.PutState("hello world",[]byte(args[0]))  //Just to check the network whether we can read and write
        if err != nil {
 		return nil, err
+       }
+	
+        /* Reset container index list - Making sure the value corresponding to containerIndexStr  is empty */
+
+       var empty []string
+       jsonAsBytes, _ := json.Marshal(empty)                                   //create an empty array of string
+       err = stub.PutState(containerIndexStr, jsonAsBytes)                     //Resetting - Making milk container list as empty 
+       if err != nil {
+		return nil, err
+        }  
+	
+	/* Resetting the order list - Making sure the value corresponding to openOrdersStr is empty */
+       var orders AllOrders                                            // new instance of Orderlist 
+	jsonAsBytes, _ = json.Marshal(orders)				//  it will be null initially
+	err = stub.PutState(openOrdersStr, jsonAsBytes)                 //So the value for key is null
+	if err != nil {       
+		return nil, err
 }
-	return nil, nil
+	// Resetting the Assets of Supplier for test case- later on we can do for market and logistics also
+	var emptyasset Asset
+	jsonAsBytes, _ = json.Marshal(emptyasset)
+	err = stub.PutState("SupplierAssets",jsonAsBytes)        // Supplier assets are empty now
+	
+	
+        return nil, nil
+
 }
 
 // Invoke is our entry point to invoke a chaincode function
