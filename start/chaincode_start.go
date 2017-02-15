@@ -128,9 +128,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	        return t.init_logistics(stub,args)
         }else if function == "set_user"{                        // change user of container to customer - invoked by logistics practically - params-orderid, container id
  	        return t.set_user(stub,args)
-        }else if function == "checktheproduct"{                // name speaks for all - invoked by Market - params- order id, container id
+        }/*else if function == "checktheproduct"{                // name speaks for all - invoked by Market - params- order id, container id
  	       return t.checktheproduct(stub,args)
-        }
+        }*/
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation: " + function)
@@ -457,7 +457,7 @@ return nil,nil
 	//t.checktheproduct(stub,OrderID,ContainerID)
 }
 
-
+/*
 
 func (t *SimpleChaincode) checktheproduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
@@ -497,16 +497,7 @@ return nil,nil
 
 }
 
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 
