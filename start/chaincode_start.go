@@ -134,6 +134,8 @@ var err error
 id := args[0]
 user := args[1]
 litres :=args[2] 
+	
+// Checking if the container already exists in the network
 milkAsBytes, err := stub.GetState(id) 
 if err != nil {
 		return nil, errors.New("Failed to get details og given id") 
@@ -149,12 +151,41 @@ if res.ContainerID == id{
         return nil,errors.New("This cpontainer alreadt exists")
 }
 
+//If not present, create it and Update ledger, containerIndexStr, Assets of Supplier
+//Creation
 res.ContainerID = id
 res.User = user
 res.Litres = litres
 milkAsBytes, _ =json.Marshal(res)
 
-stub.PutState(id,milkAsBytes)
+stub.PutState(res.ContainerID,milkAsBytes)
+	
+//Update containerIndexStr	
+	containerAsBytes, err := stub.GetState(containerIndexStr)
+	if err != nil {
+		return nil, errors.New("Failed to get container index")
+	}
+	var containerIndex []string                                        //an array to store container indices - later this wil be the value for containerIndexStr
+	json.Unmarshal(containerAsBytes, &containerIndex)	
+	
+	
+	containerIndex = append(containerIndex, res.ContainerID)          //append the newly created container to the global container list									//add marble name to index list
+	fmt.Println("! container index: ", containerIndex)
+	jsonAsBytes, _ := json.Marshal(containerIndex)
+        err = stub.PutState(containerIndexStr, jsonAsBytes)
+
+// append the container ID to the existing assets of the Supplier
+	
+	supplierassetAsBytes,_ := stub.GetState("SupplierAssets")        // The same key which we used in Init function 
+	supplierasset := Asset{}
+	json.Unmarshal( supplierassetAsBytes, &supplierasset)
+	supplierasset.containerIDs = append(supplierasset.containerIDs, res.ContainerID)
+	supplierassetAsBytes,_=  json.Marshal(supplierasset)
+	stub.PutState("SupplierAssets",supplierassetAsBytes)
+
+	//t.read(stub,"SupplierAssets")
+	
+	
 return nil,nil
 
 }
