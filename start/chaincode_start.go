@@ -278,7 +278,12 @@ func (t *SimpleChaincode) View_order(stub shim.ChaincodeStubInterface, args []st
 	
 	// This will be invoked by Supplier- think of UI-View orders- does he pass any parameter there...
 	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter
-/* fetching the Orders*/
+        a := args[0]
+	fmt.Println(a)
+	
+	/* fetching the Orders*/
+	
+	
 	
 	ordersAsBytes, err := stub.GetState(openOrdersStr)
 	if err != nil {
