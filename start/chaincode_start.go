@@ -126,6 +126,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	        return t.View_order(stub,args)
         }else if function == "init_logistics"{                  // To initiate product delivery - invoked by Supplier in practical case-  params-order id, container id to be transferred 
 	        return t.init_logistics(stub,args)
+        }else if function == "set_user"{                        // change user of container to customer - invoked by logistics practically - params-orderid, container id
+ 	        return t.set_user(stub,args)
         }
 	fmt.Println("invoke did not find func: " + function)					//error
 
@@ -395,6 +397,63 @@ func (t *SimpleChaincode) init_logistics(stub shim.ChaincodeStubInterface, args 
 return nil,nil
 }
 
+
+func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+// OrderId  ContainerID
+//args[0] args[1]
+	
+//So here we will set the user name in container ID to the one in Order ID and Status to Delivered - Asset Transfer
+	
+	OrderID := args[0]
+	ContainerID := args[1]
+//fetch order details
+       orderAsBytes, err := stub.GetState(OrderID)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	ShipOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &ShipOrder)
+//fetch container details	
+	assetAsBytes,err := stub.GetState(ContainerID)
+	container := MilkContainer{}
+	json.Unmarshal(assetAsBytes, &container)
+
+	if (container.User == "Supplier"){
+	
+	container.User = ShipOrder.User             //ASSET TRANSFER
+	
+       
+	assetAsBytes,err = json.Marshal(container)
+	stub.PutState(ContainerID, assetAsBytes)    //Pushing the updated container  back to the ledger
+	
+	ShipOrder.Status = "Delivered"
+	orderAsBytes,err = json.Marshal(ShipOrder) 
+	
+	stub.PutState(OrderID,orderAsBytes)      //pushing the updated Order back to ledger
+		
+	//Updating the orders list 
+		ordersAsBytes, err := stub.GetState(openOrdersStr)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(ordersAsBytes, &orders)	
+		
+		orders.OpenOrders[0].Status = ShipOrder.Status
+		ordersAsBytes,_ = json.Marshal(orders)
+		stub.PutState(openOrdersStr,ordersAsBytes)
+	}else
+        {
+                stub.PutState("setuser",[]byte("failure in this function"))
+                //t.read(stub,"setuser")
+                return nil,nil
+        }
+
+
+return nil,nil
+	//t.checktheproduct(stub,OrderID,ContainerID)
+}
 
 
 
