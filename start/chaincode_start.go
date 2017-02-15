@@ -47,14 +47,14 @@ type Order struct{
 type AllOrders struct{
 	OpenOrders []Order `json:"open_orders"`
 }
-
+/*
 type Asset struct{
 	  User string        `json:"user"`
 	containerIDs []string `json:"containerids"`
 	coinIds []string `json:"coinids"`
 }
 
-
+*/
 
 // ============================================================================================================================
 // Main
@@ -97,13 +97,14 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, err
 }
 	// Resetting the Assets of Supplier for test case- later on we can do for market and logistics also
+	/*
 	var emptyasset Asset
 	
 	
 	jsonAsBytes, _ = json.Marshal(emptyasset)
 	err = stub.PutState("SupplierAssets",jsonAsBytes)        // Supplier assets are empty now
 	
-	
+	*/
         return nil, nil
 
 }
@@ -175,20 +176,76 @@ stub.PutState(res.ContainerID,milkAsBytes)
         err = stub.PutState(containerIndexStr, jsonAsBytes)
 
 // append the container ID to the existing assets of the Supplier
-	
+	/*
 	supplierassetAsBytes,_ := stub.GetState("SupplierAssets")        // The same key which we used in Init function 
 	supplierasset := Asset{}
 	json.Unmarshal( supplierassetAsBytes, &supplierasset)
 	supplierasset.containerIDs = append(supplierasset.containerIDs, res.ContainerID)
 	supplierassetAsBytes,_=  json.Marshal(supplierasset)
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
-
+*/
 	//t.read(stub,"SupplierAssets")
 	
 	
 return nil,nil
 
 }
+
+
+
+/******************Asset Coin creation****************/
+
+func (t *SimpleChaincode) Create_coin(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+//"1x245" "Market/Logistics"
+id := args[0]
+user:= args[1]
+//Check if coin already exists in network
+coinAsBytes , err := stub.GetState(id)
+if err != nil{
+              return nil, errors.New("Failed to get details of given id")
+} 
+
+res :=SupplyCoin{}
+
+json.Unmarshal(coinAsBytes, &res)
+
+if res.CoinID == id{
+
+          fmt.Println("Coin already exists")
+          fmt.Println(res)
+          return nil,errors.New("This coin already exists")
+}
+// Proceed to create if not der in ntwrk
+res.CoinID = id
+res.User = user
+
+coinAsBytes, _ = json.Marshal(res)
+stub.PutState(id,coinAsBytes)
+//t.read(stub,"res.CoinID")
+return nil,nil
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
