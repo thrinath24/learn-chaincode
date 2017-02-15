@@ -343,7 +343,7 @@ func (t *SimpleChaincode) init_logistics(stub shim.ChaincodeStubInterface, args 
 	
 	fmt.Println("Inside Init logistics function")
 	OrderID := args[0]
-	ContainerID := args[1]
+	//ContainerID := args[1]
 	
 	// fetch the order details and update status as "in transit"
 	orderAsBytes, err := stub.GetState(OrderID)
