@@ -230,6 +230,44 @@ return nil,nil
 
 
 
+/*****************ORDER MILK****************/
+
+
+func (t *SimpleChaincode) Order_milk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+//"20"
+//litres
+var err error
+Openorder := Order{}
+Openorder.User = "Market"
+Openorder.Status = "pending"
+Openorder.OrderID = "abcd"
+Openorder.Litres = args[0]
+orderAsBytes,_ := json.Marshal(Openorder)
+	
+err = stub.PutState(Openorder.OrderID,orderAsBytes)
+	
+if err != nil {
+		return nil, err
+}
+
+//Add the new order to the orders list
+	ordersAsBytes, err := stub.GetState(openOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(ordersAsBytes, &orders)				
+	
+	orders.OpenOrders = append(orders.OpenOrders , Openorder);		//append the new order - Openorder
+	fmt.Println("! appended Openorder to orders")
+	jsonAsBytes, _ := json.Marshal(orders)
+	err = stub.PutState(openOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
+	if err != nil {
+		return nil, err
+}
+	//t.read(stub,"openOrdersStr")
+return nil,nil
+}
 
 
 
