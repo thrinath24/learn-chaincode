@@ -128,6 +128,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	        return t.init_logistics(stub,args)
         }else if function == "set_user"{                        // change user of container to customer - invoked by logistics practically - params-orderid, container id
  	        return t.set_user(stub,args)
+        }else if function == "checktheproduct"{                // name speaks for all - invoked by Market - params- order id, container id
+ 	       return t.checktheproduct(stub,args)
         }
 	fmt.Println("invoke did not find func: " + function)					//error
 
@@ -457,6 +459,43 @@ return nil,nil
 
 
 
+func (t *SimpleChaincode) checktheproduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+// args[0] args[1]
+// OrderID, ContainerID
+	
+	OrderID := args[0]
+	ContainerID := args[1]
+//fetch order details
+	orderAsBytes, err := stub.GetState(OrderID)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	ShipOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &ShipOrder)
+//fetch container details
+       assetAsBytes,_ := stub.GetState(ContainerID)
+	Deliveredcontainer := MilkContainer{}
+	json.Unmarshal(assetAsBytes, &Deliveredcontainer)
+
+//check and transfer coin
+	if (Deliveredcontainer.User == "Market" && Deliveredcontainer.Litres == ShipOrder.Litres) {
+		
+		fmt.Println("Thanks, I got the product")
+		stub.PutState("Market Response",[]byte("Product received"))
+		//t.cointransfer(stub,coinid) coinid -hard code it and send the coin id created by market
+		return nil,nil
+       }else{
+                stub.PutState("checktheproduct",[]byte("failure"))
+               // t.read(stub,"checktheproduct")
+                return nil,nil
+        }
+
+	
+return nil,nil
+
+
+}
 
 
 
