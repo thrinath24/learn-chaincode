@@ -122,7 +122,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		return t.Order_milk(stub,args)
-	}
+	}else if function == "View_order"{                     // To check if any orders are  something - invoked by Supplier- params - truly speaking- no need any inputs- but can pass anything as arguments     
+	        return t.View_order(stub,args)
+        }
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation: " + function)
@@ -270,6 +272,63 @@ if err != nil {
 	//t.read(stub,"openOrdersStr")
 return nil,nil
 }
+
+
+func (t *SimpleChaincode) View_order(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	// This will be invoked by Supplier- think of UI-View orders- does he pass any parameter there...
+	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter
+/* fetching the Orders*/
+	
+	ordersAsBytes, err := stub.GetState(openOrdersStr)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(ordersAsBytes, &orders)	
+	
+	
+	
+/*fetching the containers*/	
+	
+	containerAsBytes, err := stub.GetState(containerIndexStr)
+	if err != nil {
+		return nil, errors.New("Failed to get container index")
+	}
+	var containerIndex []string             //an array to clone container indices
+	json.Unmarshal(containerAsBytes, &containerIndex)
+	
+// From the list of Id's , picking up one Id and fetching its details
+	
+	containerAsBytes,_ = stub.GetState(containerIndex[0])
+	
+	res := MilkContainer{} 
+        json.Unmarshal(containerAsBytes, &res)
+
+// If ordered quantity and container quantity , then proceed and trigger logistics(How ever this is not automated here,we will do it 
+	
+	if res.Litres == orders.OpenOrders[0].Litres {
+		fmt.Println("Found a suitable container")
+		
+		orders.OpenOrders[0].Status = "Ready to be Shipped"
+		//t.init_logistics(stub,orders.OpenOrders[0].OrderId, containerIndex[0])
+		ordersAsBytes,_ = json.Marshal(orders)
+		stub.PutState(openOrdersStr,ordersAsBytes)
+		//t.read(stub,openOrdersStr)
+	}else{
+                stub.PutState("sorry",[]byte("we couldn't find a product for your choice of requirements"))
+        }
+
+
+
+	
+return nil,nil	
+}
+
+/******End of View orders ****/
+
+
+
 
 
 
