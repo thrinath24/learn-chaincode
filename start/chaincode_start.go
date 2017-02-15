@@ -98,7 +98,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 }
 	// Resetting the Assets of Supplier for test case- later on we can do for market and logistics also
 	var emptyasset Asset
-	emptyasset.User = "Supplier"
+	
 	
 	jsonAsBytes, _ = json.Marshal(emptyasset)
 	err = stub.PutState("SupplierAssets",jsonAsBytes)        // Supplier assets are empty now
