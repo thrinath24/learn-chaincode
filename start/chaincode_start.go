@@ -130,6 +130,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
  	        return t.set_user(stub,args)
         }else if function == "checktheproduct"{                // name speaks for all - invoked by Market - params- order id, container id
  	       return t.checktheproduct(stub,args)
+        }else if function == "cointransfer"{                   // invoked by market - params- coin id, sender,receiver
+	       return t.cointransfer(stub,args)
         }
 	fmt.Println("invoke did not find func: " + function)					//error
 
@@ -497,6 +499,45 @@ return nil,nil
 
 }
 
+
+/*****************COIN TRANSFER**********/
+
+
+func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+//args[0] args[1] args[2]
+//coinID  sender    receiver
+	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
+	CoinID := args[0]
+	sender := args[1]
+	receiver := args[2]
+	
+	assetAsBytes,err := stub.GetState(CoinID)
+	Transfercoin := SupplyCoin{}
+	json.Unmarshal(assetAsBytes, &Transfercoin)
+	
+	if (Transfercoin.User == sender) {   // check if the market guy actually holds coin in his name
+	
+		Transfercoin.User = receiver
+		assetAsBytes,err = json.Marshal(Transfercoin)
+		stub.PutState(CoinID, assetAsBytes)
+		return nil,nil
+		
+	}else{
+	
+		fmt.Println("There was some issue in transferring")
+		//stub.PutState("cointransfer",[]byte("problem in coin transfer"))
+		//t.read(stub,"cointransfer")
+		return nil,nil
+	}
+
+	
+return nil,nil
+	
+	
+/* END OF STORY*/
+
+}
 
 
 
