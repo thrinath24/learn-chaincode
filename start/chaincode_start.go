@@ -124,7 +124,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Order_milk(stub,args)
 	}else if function == "View_order"{                     // To check if any orders are  something - invoked by Supplier- params - truly speaking- no need any inputs- but can pass anything as arguments     
 	        return t.View_order(stub,args)
-        }else if function == "init_logistics"{                  // To initiate product delivery - invoked by Supplier in practical case-  params-order id, container id to be transferred 
+        }/*else if function == "init_logistics"{                  // To initiate product delivery - invoked by Supplier in practical case-  params-order id, container id to be transferred 
 	        return t.init_logistics(stub,args)
         }else if function == "set_user"{                        // change user of container to customer - invoked by logistics practically - params-orderid, container id
  	        return t.set_user(stub,args)
@@ -132,7 +132,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
  	       return t.checktheproduct(stub,args)
         }else if function == "cointransfer"{                   // invoked by market - params- coin id, sender,receiver
 	       return t.cointransfer(stub,args)
-        }
+        }*/
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation: " + function)
@@ -293,10 +293,8 @@ func (t *SimpleChaincode) View_order(stub shim.ChaincodeStubInterface, args []st
 	
 	
 	
-	ordersAsBytes, err := stub.GetState(openOrdersStr)
-	if err != nil {
-		return nil, errors.New("Failed to get openorders")
-	}
+	ordersAsBytes, _ := stub.GetState(openOrdersStr)
+	
 	var orders AllOrders
 	json.Unmarshal(ordersAsBytes, &orders)	
 	
@@ -320,7 +318,7 @@ func (t *SimpleChaincode) View_order(stub shim.ChaincodeStubInterface, args []st
 
 // If ordered quantity and container quantity , then proceed and trigger logistics(How ever this is not automated here,we will do it 
 	
-	if res.Litres == orders.OpenOrders[0].Litres {
+	if (res.Litres == orders.OpenOrders[0].Litres) {
 		fmt.Println("Found a suitable container")
 		
 		orders.OpenOrders[0].Status = "Ready to be Shipped"
@@ -356,7 +354,7 @@ return nil,nil
 
 /******End of View orders ****/
 
-
+/*
 
 func (t *SimpleChaincode) init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	
@@ -501,7 +499,7 @@ return nil,nil
 }
 
 
-/*****************COIN TRANSFER**********/
+
 
 
 func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -539,14 +537,12 @@ func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args [
 	
 return nil,nil
 	
-	
+}
 /* END OF STORY*/
 
-}
 
 
-
-
+*/
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
