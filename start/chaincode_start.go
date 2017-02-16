@@ -30,7 +30,6 @@ type MilkContainer struct{
 }
 
 
-
 type SupplyCoin struct{
 
         CoinID string `json:"coinid"`
