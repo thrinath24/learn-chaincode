@@ -513,6 +513,10 @@ func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args [
 	receiver := args[2]
 	
 	assetAsBytes,err := stub.GetState(CoinID)
+	if err != nil{
+		fmt.Println("Something wrog happened")
+	}
+	
 	Transfercoin := SupplyCoin{}
 	json.Unmarshal(assetAsBytes, &Transfercoin)
 	
