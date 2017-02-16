@@ -505,12 +505,12 @@ return nil,nil
 
 func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	
-//args[0] args[1] args[2]
-//coinID  sender    receiver
+//args[0] 
+//coinID  
 	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
 	CoinID := args[0]
-	sender := args[1]
-	receiver := args[2]
+	
+	
 	
 	assetAsBytes,err := stub.GetState(CoinID)
 	if err != nil{
@@ -520,9 +520,9 @@ func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args [
 	Transfercoin := SupplyCoin{}
 	json.Unmarshal(assetAsBytes, &Transfercoin)
 	
-	if (Transfercoin.User == sender) {   // check if the market guy actually holds coin in his name
+	if (Transfercoin.User == "Market") {   // check if the market guy actually holds coin in his name
 	
-		Transfercoin.User = receiver
+		Transfercoin.User = "Supplier"
 		assetAsBytes,err = json.Marshal(Transfercoin)
 		stub.PutState(CoinID, assetAsBytes)
 		return nil,nil
