@@ -538,11 +538,11 @@ func (t *SimpleChaincode) cointransfer( stub shim.ChaincodeStubInterface, args [
 return nil,nil
 	
 }
-/* END OF STORY*/
-
-
-
 */
+
+
+
+
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
