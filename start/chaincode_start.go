@@ -326,7 +326,7 @@ func (t *SimpleChaincode) View_order(stub shim.ChaincodeStubInterface, args []st
 		orders.OpenOrders[0].Status = "Ready to be Shipped"
 		//t.init_logistics(stub,orders.OpenOrders[0].OrderId, containerIndex[0])
 		ordersAsBytes,_ = json.Marshal(orders)
-		stub.PutState("inside view order","Hope this works")
+		stub.PutState("inside view order",[]byte("Hope this works"))
 		stub.PutState(openOrdersStr,ordersAsBytes)
 		
 		OrderID := orders.OpenOrders[0].OrderID
