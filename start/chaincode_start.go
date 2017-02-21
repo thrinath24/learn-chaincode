@@ -197,7 +197,9 @@ stub.PutState(res.ContainerID,milkAsBytes)
 	supplierassetAsBytes,_=  json.Marshal(supplierasset)
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
 */
-	//t.read(stub,"SupplierAssets")
+	val args []string
+	args[0] = "SupplierAssets"
+	t.read(stub,args)
 	
 	
 return nil,nil
