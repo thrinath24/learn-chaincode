@@ -128,7 +128,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		res,err :=  t.Order_milk(stub,args)
 		jsonresp,_ := View_order(stub,args)
-		fmt.Println(jsonresp)
+		json.Unmarshal(jsonresp,&args)
 		printdetails(stub, 3)
 		return res,err
 	}
@@ -349,9 +349,10 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
         }
 
 
-
+	a := [2]string(orders.OpenOrders[0].OrderID,res.containerID)
 	
-return nil,nil	
+	
+	return []bytes(a),nil	
 }
 
 
