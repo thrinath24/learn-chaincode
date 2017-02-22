@@ -350,7 +350,7 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, err
 
 
 	var b []string
-	b[0] = ShipOrder.OrderID
+	b[0] = orders.OpenOrders[0].OrderID
 	b[1] = res.ContainerID
 	
 	
