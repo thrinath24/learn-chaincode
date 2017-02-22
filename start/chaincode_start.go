@@ -121,11 +121,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
-		res,err:=  t.Order_milk(stub,args)
-		fmt.Println(res)
-		fmt.Println(err)
+		return  t.Order_milk(stub,args)
 		
-		return t.View_order(stub,args)
+		
+		 
 	}else if function == "init_logistics"{                  // To initiate product delivery - invoked by Supplier in practical case-  params-order id, container id to be transferred 
 	        return t.init_logistics(stub,args)
         }else if function == "set_user"{                        // change user of container to customer - invoked by logistics practically - params-orderid, container id
@@ -134,9 +133,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
  	       return t.checktheproduct(stub,args)
         }else if function == "cointransfer"{                   // invoked by market - params- coin id, sender,receiver
 	       return t.cointransfer(stub,args)
-        }/*else if function == "View_order"{                     // To check if any orders are  something - invoked by Supplier- params - truly speaking- no need any inputs- but can pass anything as arguments     
+        }else if function == "View_order"{                     // To check if any orders are  something - invoked by Supplier- params - truly speaking- no need any inputs- but can pass anything as arguments     
 	        return t.View_order(stub,args)
-        }*/
+        }
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation: " + function)
@@ -207,7 +206,7 @@ stub.PutState(res.ContainerID,milkAsBytes)
 	t.Query(stub,readargs)
 	*/
 	//byteid := json.Marshal(id)
-	return []byte(id),nil
+	return nil,nil
 
 }
 
