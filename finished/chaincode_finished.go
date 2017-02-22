@@ -30,6 +30,9 @@ type SimpleChaincode struct {
 
 var containerIndexStr = "_containerindex"    //This will be used as key and a value will be an array of Container IDs	
 
+var openOrdersStr = "_openorders"	  // This will be the key, value will be a list of orders(technically - array of order structs)
+
+
 
 type MilkContainer struct{
 
@@ -39,6 +42,30 @@ type MilkContainer struct{
         Litres string        `json:"litres"`
 
 }
+
+
+type SupplyCoin struct{
+
+        CoinID string `json:"coinid"`
+        User string        `json:"user"`
+}
+
+type Order struct{
+        OrderID string `json:"orderid"`
+       User string `json:"user"`
+       Status string `json:"status"`
+       Litres string    `json:"litres"`
+}
+
+type AllOrders struct{
+	OpenOrders []Order `json:"open_orders"`
+}
+
+
+
+
+
+
 
 func main() {
 	err := shim.Start(new(SimpleChaincode))
@@ -71,6 +98,15 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, err
         }  
 	
+	
+	/* Resetting the order list - Making sure the value corresponding to openOrdersStr is empty */
+       var orders AllOrders                                            // new instance of Orderlist 
+	jsonAsBytes, _ = json.Marshal(orders)				//  it will be null initially
+	err = stub.PutState(openOrdersStr, jsonAsBytes)                 //So the value for key is null
+	if err != nil {       
+		return nil, err
+}
+	
 	 return nil, nil
 }
 
@@ -84,9 +120,15 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	} else if function == "write" {
 		return t.write(stub, args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
-		res,err := t.Create_milkcontainer(stub, args)
+		
+		return t.Create_milkcontainer(stub, args)
+		
+	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.Create_coin(stub, args)	
+        }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
+		res,err :=  t.Order_milk(stub,args)
 		printdetails(stub, 3)
-                return res,err
+		return res,err
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -162,6 +204,77 @@ func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
        }
 	return err
 
+}
+
+
+
+func (t *SimpleChaincode) Create_coin(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+//"1x245" "Market/Logistics"
+id := args[0]
+user:= args[1]
+//Check if coin already exists in network
+coinAsBytes , err := stub.GetState(id)
+if err != nil{
+              return nil, errors.New("Failed to get details of given id")
+} 
+
+res :=SupplyCoin{}
+
+json.Unmarshal(coinAsBytes, &res)
+
+if res.CoinID == id{
+
+          fmt.Println("Coin already exists")
+          fmt.Println(res)
+          return nil,errors.New("This coin already exists")
+}
+// Proceed to create if not der in ntwrk
+res.CoinID = id
+res.User = user
+
+coinAsBytes, _ = json.Marshal(res)
+stub.PutState(id,coinAsBytes)
+//t.read(stub,"res.CoinID")
+return nil,nil
+}
+
+
+
+func (t *SimpleChaincode) Order_milk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+//"20"
+//litres
+var err error
+Openorder := Order{}
+Openorder.User = "Market"
+Openorder.Status = "pending"
+Openorder.OrderID = "abcd"
+Openorder.Litres = args[0]
+orderAsBytes,_ := json.Marshal(Openorder)
+	
+err = stub.PutState(Openorder.OrderID,orderAsBytes)
+	
+if err != nil {
+		return nil, err
+}
+
+//Add the new order to the orders list
+	ordersAsBytes, err := stub.GetState(openOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(ordersAsBytes, &orders)				
+	
+	orders.OpenOrders = append(orders.OpenOrders , Openorder);		//append the new order - Openorder
+	fmt.Println("! appended Openorder to orders")
+	jsonAsBytes, _ := json.Marshal(orders)
+	err = stub.PutState(openOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
+	if err != nil {
+		return nil, err
+}
+	//t.read(stub,"openOrdersStr")
+return nil,nil
 }
 
 
