@@ -158,7 +158,7 @@ func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
 	fmt.Println(a)
 	err = stub.PutState("hello cts",[]byte("Inside printdetails")  //Just to check the network whether we can read and write
        if err != nil {
-		return nil, err
+		return  err
        }
 
 }
