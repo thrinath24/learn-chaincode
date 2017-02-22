@@ -129,10 +129,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		res,err :=  t.Order_milk(stub,args)
 		jsonresp,_ := View_order(stub,args)
 		fmt.Println(jsonresp)
-                var b []string
-	        b[0]="abcd"
-	        b[1]="1x223"
-		printdetails(stub, b)
+                //var b []string
+	        //b[0]="abcd"
+	        //b[1]="1x223"
+		printdetails(stub, 3)
 		return res,err
 	}
 	fmt.Println("invoke did not find func: " + function)
@@ -274,11 +274,11 @@ return nil,nil
 
 
 
-func printdetails(stub  shim.ChaincodeStubInterface, args []string)(err error) {
+func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
 
 	
-	fmt.Println(args)
-	err = stub.PutState("hello cts",[]byte(args[0])) //Just to check the network whether we can read and write
+	fmt.Println(a)
+	err = stub.PutState("hello cts",[]byte(inside printdetails)) //Just to check the network whether we can read and write
        if err != nil {
 		return  err
        }
