@@ -349,10 +349,10 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
         }
 
 
-	a := [2]string(orders.OpenOrders[0].OrderID,res.containerID)
+	b := [2]string(orders.OpenOrders[0].OrderID,res.containerID)
 	
-	
-	return []bytes(a),nil	
+	bAsBytes,_1 := json.Marshal(b)
+	return bAsBytes,nil	
 }
 
 
