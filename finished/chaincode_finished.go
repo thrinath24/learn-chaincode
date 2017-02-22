@@ -130,9 +130,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		jsonresp,_ := View_order(stub,args)
 		fmt.Println(jsonresp)
 		
-	        args[0]="abcd"
-		args[1]="abcd"
-		jsonresp,_ = init_logistics(stub,args)
+		jsonresp,_ = init_logistics(stub,res)
 		
 		jsonresp,_ = set_user(stub,args)
 		
@@ -245,7 +243,7 @@ return nil,nil
 
 
 
-func (t *SimpleChaincode) Order_milk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Order_milk(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 //"20"
 //litres
 var err error
@@ -278,7 +276,7 @@ if err != nil {
 		return nil, err
 }
 	//t.read(stub,"openOrdersStr")
-return nil,nil
+return Openorder.OrderID,nil
 }
 
 
