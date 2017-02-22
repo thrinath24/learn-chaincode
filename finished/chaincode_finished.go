@@ -361,7 +361,7 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, err
 	return nil,nil	
 }
 
-func init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]string, error) {
 	
 	
 	
