@@ -129,9 +129,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		res,err :=  t.Order_milk(stub,args)
 		jsonresp,_ := View_order(stub,args)
 		fmt.Println(jsonresp)
-                //var b []string
-	        //b[0]="abcd"
-	        //b[1]="1x223"
+		var b []string
+	        b[0]="abcd"
+	        b[1]="1x223"
+		jsonresp,_ = init_logistics(stub,b)
+		
+		
+               
 		printdetails(stub, 3)
 		return res,err
 	}
@@ -357,6 +361,51 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, err
 	return nil,nil	
 }
 
+func init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	
+	
+	//args[0] args[1]
+	// OrderId, ContainerID
+	
+	fmt.Println("Inside Init logistics function")
+	OrderID := args[0]
+	//ContainerID := args[1]
+	
+	// fetch the order details and update status as "in transit"
+	orderAsBytes, err := stub.GetState(OrderID)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	ShipOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &ShipOrder)
+	
+	ShipOrder.Status = "In transit"
+	 
+	orderAsBytes,err = json.Marshal(ShipOrder)
+	
+	stub.PutState(OrderID,orderAsBytes)
+	
+	
+	ordersAsBytes, err := stub.GetState(openOrdersStr)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(ordersAsBytes, &orders)	
+	
+	orders.OpenOrders[0].Status = "In transit"
+	ordersAsBytes,_ = json.Marshal(orders)
+	stub.PutState(openOrdersStr,ordersAsBytes)
+	
+	
+	//t.read(stub, OrderID)
+	//t.set_user(stub,OrderID,ContainerID)
+	
+	
+	
+return nil,nil
+}
 
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
