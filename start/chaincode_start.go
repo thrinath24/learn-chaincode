@@ -116,7 +116,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
-		return t.Create_milkcontainer(stub, args)      
+		a,err :=  t.Create_milkcontainer(stub, args)
+		var empty []string
+		args = empty
+		b, _ := json.Unmarshal(a)
+		args[0] = b
+		t.Query(stub,read,args)
 	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
@@ -197,12 +202,12 @@ stub.PutState(res.ContainerID,milkAsBytes)
 	supplierassetAsBytes,_=  json.Marshal(supplierasset)
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
 */
-	val a []string
-	a[0] = "SupplierAssets"
-	t.read(stub,a)
 	
-	
-return nil,nil
+	/*args[0] = "SupplierAssets"
+	t.Query(stub,readargs)
+	*/
+	byteid = json.Marshal(id)
+	return byteid,nil
 
 }
 
