@@ -119,9 +119,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		a,err :=  t.Create_milkcontainer(stub, args)
 		var empty []string
 		args = empty
-		b, _ := json.Unmarshal(a)
-		args[0] = b
-		t.Query(stub,read,args)
+		if err!=nil{
+			fmt.Println("So what")
+		}
+		fmt.Println(a)
+		args[0] = "1x223"
+		t.Query(stub,"read",args)
 	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
@@ -206,8 +209,8 @@ stub.PutState(res.ContainerID,milkAsBytes)
 	/*args[0] = "SupplierAssets"
 	t.Query(stub,readargs)
 	*/
-	byteid = json.Marshal(id)
-	return byteid,nil
+	//byteid := json.Marshal(id)
+	return []byte(id),nil
 
 }
 
