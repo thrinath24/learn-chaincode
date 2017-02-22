@@ -116,22 +116,16 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
-		a,err :=  t.Create_milkcontainer(stub, args)
-		var empty []string
-		args = empty
-		if err!=nil{
-			fmt.Println("So what")
-		}
-		fmt.Println(a)
-		args[0] = "1x223"
-		t.Query(stub,"read",args)
+		 t.Create_milkcontainer(stub, args)
+		
 	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		return t.Order_milk(stub,args)
-	}else if function == "View_order"{                     // To check if any orders are  something - invoked by Supplier- params - truly speaking- no need any inputs- but can pass anything as arguments     
+		return t.View_order(stub,args)
+	}/*else if function == "View_order"{                     // To check if any orders are  something - invoked by Supplier- params - truly speaking- no need any inputs- but can pass anything as arguments     
 	        return t.View_order(stub,args)
-        }else if function == "init_logistics"{                  // To initiate product delivery - invoked by Supplier in practical case-  params-order id, container id to be transferred 
+        }*/else if function == "init_logistics"{                  // To initiate product delivery - invoked by Supplier in practical case-  params-order id, container id to be transferred 
 	        return t.init_logistics(stub,args)
         }else if function == "set_user"{                        // change user of container to customer - invoked by logistics practically - params-orderid, container id
  	        return t.set_user(stub,args)
