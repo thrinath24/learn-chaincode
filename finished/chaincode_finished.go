@@ -127,9 +127,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		res,err :=  t.Order_milk(stub,args)
-		jsonresp,_ := View_order(stub,args)
-		json.Unmarshal(jsonresp,&args)
-		printdetails(stub, args)
+		b,_ := View_order(stub,args)
+		
+		printdetails(stub, b)
 		return res,err
 	}
 	fmt.Println("invoke did not find func: " + function)
@@ -285,7 +285,7 @@ func printdetails(stub  shim.ChaincodeStubInterface, args []string)(err error) {
 
 
 
-func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, error) {
 	// This will be invoked by Supplier- think of UI-View orders- does he pass any parameter there...
 	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter
         a := args[0]
@@ -349,10 +349,12 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
         }
 
 
-	b := [2]string("abcd","1x223")
+	var b []string
+	b[0] = ShipOrder.OrderID
+	b[1] = res.ContainerID
 	
 	
-	return []byte(b),nil	
+	return b,nil	
 }
 
 
