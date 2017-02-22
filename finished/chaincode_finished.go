@@ -85,11 +85,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.write(stub, args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
 		res,err := t.Create_milkcontainer(stub, args)
-		
-		
 		printdetails(stub, 3)
-	
-		return res,err
+                return res,err
 	}
 	fmt.Println("invoke did not find func: " + function)
 
