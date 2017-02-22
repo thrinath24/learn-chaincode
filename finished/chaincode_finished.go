@@ -154,14 +154,16 @@ stub.PutState(res.ContainerID,milkAsBytes)
 
 func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
 
-	var  err error
+	
 	fmt.Println(a)
-	err = stub.PutState("hello cts",[]byte("Inside printdetails")  //Just to check the network whether we can read and write
+	err = stub.PutState("hello cts",[]byte("Inside printdetails")) //Just to check the network whether we can read and write
        if err != nil {
 		return  err
        }
 
 }
+
+
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
