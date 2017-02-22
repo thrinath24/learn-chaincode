@@ -127,8 +127,11 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		res,err :=  t.Order_milk(stub,args)
-		b,_ := View_order(stub,args)
-		
+		jsonresp,_ := View_order(stub,args)
+		fmt.Println("jsonresp)
+			    var b []string
+	b[0]="abcd"
+			    b[1]="1x223"
 		printdetails(stub, b)
 		return res,err
 	}
@@ -349,12 +352,9 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, err
         }
 
 
-	var b []string
-	b[0] = orders.OpenOrders[0].OrderID
-	b[1] = res.ContainerID
 	
 	
-	return b,nil	
+	return nil,nil	
 }
 
 
