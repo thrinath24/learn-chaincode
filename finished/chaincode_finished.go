@@ -160,6 +160,7 @@ func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
        if err != nil {
 		return  err
        }
+	return err
 
 }
 
