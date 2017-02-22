@@ -130,9 +130,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		jsonresp,_ := View_order(stub,args)
 		fmt.Println(jsonresp)
 		
-	        args[0]="abcd"
-	        args[1]="1x223"
-		jsonresp,_ = init_logistics(stub,args)
+	        
+		jsonresp,_ = init_logistics(stub,"abcd")
 		
 		
                
