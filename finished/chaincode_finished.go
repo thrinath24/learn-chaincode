@@ -85,13 +85,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.write(stub, args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
 		res,err := t.Create_milkcontainer(stub, args)
-		cont := MilkContainer{}
-		contAsBytes,_ := stub.GetState("1x223")
-		json.Unmarshal(contAsBytes, &cont)
-		if (cont.Litres != "30"){
+		//cont := MilkContainer{}
+		//contAsBytes,_ := stub.GetState("1x223")
+		//json.Unmarshal(contAsBytes, &cont)
+		//if (cont.Litres != "30"){
 		printdetails(stub, 3)
-		}else {
-			stub.PutState("abc",[]byte("I think i am reaching some where"))
+		//}else {
+		//	stub.PutState("abc",[]byte("I think i am reaching some where"))
 		return res,err
 	}
 	fmt.Println("invoke did not find func: " + function)
