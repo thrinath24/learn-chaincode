@@ -372,7 +372,7 @@ func init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]string, 
 	// OrderId, ContainerID
 	
 	fmt.Println("Inside Init logistics function")
-	OrderID := args[0]
+	OrderID := "abcd"
 	//ContainerID := args[1]
 	
 	// fetch the order details and update status as "in transit"
