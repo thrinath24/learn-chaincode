@@ -39,7 +39,7 @@ type MilkContainer struct{
         ContainerID string `json:"containerid"`
         User string        `json:"user"`
 
-        Litres string        `json:"litres"`
+        Litres int       `json:"litres"`
 
 }
 
@@ -54,7 +54,7 @@ type Order struct{
         OrderID string `json:"orderid"`
        User string `json:"user"`
        Status string `json:"status"`
-       Litres string    `json:"litres"`
+       Litres int   `json:"litres"`
 }
 
 type AllOrders struct{
@@ -62,7 +62,13 @@ type AllOrders struct{
 }
 
 
-
+type Asset struct{
+	  User string        `json:"user"`
+	containerIDs []string `json:"containerids"`
+	LitresofMilk int `json:"litresofmilk"`
+	coinIDs []string `json:"coinids"`
+	Supplycoins int `json:"supplycoins"`
+}
 
 
 
@@ -164,7 +170,7 @@ var err error
 	fmt.Println("Creating milkcontainer asset")
 id := args[0]
 user := args[1]
-litres :=args[2] 
+litres :=strconv.Atoi(args[2])
 	
 // Checking if the container already exists in the network
 milkAsBytes, err := stub.GetState(id) 
@@ -207,7 +213,19 @@ stub.PutState(res.ContainerID,milkAsBytes)
 	fmt.Println("! container index: ", containerIndex)
 	jsonAsBytes, _ := json.Marshal(containerIndex)
         err = stub.PutState(containerIndexStr, jsonAsBytes)
-	 
+	
+// append the container ID to the existing assets of the Supplier
+	
+	supplierassetAsBytes,_ := stub.GetState("SupplierAssets")        // The same key which we used in Init function 
+	supplierasset := Asset{}
+	json.Unmarshal( supplierassetAsBytes, &supplierasset)
+	supplierasset.User = "Supplier"
+	supplierasset.containerIDs = append(supplierasset.containerIDs, res.ContainerID)
+	supplierasset.LitresofMilk += res.Litres
+	supplierassetAsBytes,_=  json.Marshal(supplierasset)
+	stub.PutState("SupplierAssets",supplierassetAsBytes)
+	fmt.Println("Balance of Supplier")
+       fmt.Printf("%+v\n", supplierasset)
 
 	return nil,nil
 
@@ -261,7 +279,7 @@ Openorder := Order{}
 Openorder.User = "Market"
 Openorder.Status = "pending"
 Openorder.OrderID = "abcd"
-Openorder.Litres = args[0]
+Openorder.Litres = strconv.Atoi(args[0])
 orderAsBytes,_ := json.Marshal(Openorder)
 	
 err = stub.PutState(Openorder.OrderID,orderAsBytes)
