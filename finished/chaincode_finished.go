@@ -289,12 +289,12 @@ if err != nil {
 		return nil, err
 }
 	//t.read(stub,"openOrdersStr")
-	a,b := View_order(stub)
-	fmt.Println("After View order invocation from order milk")
-	fmt.Println("Data returned from View order")
-	fmt.Println(a)
-	fmt.Println("errors from view order if any")
-	fmt.Println(b)
+	 View_order(stub)
+	//fmt.Println("After View order invocation from order milk")
+	//fmt.Println("Data returned from View order")
+	//fmt.Println(a)
+	//fmt.Println("errors from view order if any")
+	//fmt.Println(b)
 return nil,nil
 }
 
@@ -314,7 +314,7 @@ func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
 
 
 */
-func  View_order(stub shim.ChaincodeStubInterface) ([]string, error) {
+func  View_order(stub shim.ChaincodeStubInterface) ( error) {
 	// This will be invoked by Supplier- think of UI-View orders- does he pass any parameter there...
 	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter
        // a := args[0]
@@ -335,7 +335,7 @@ func  View_order(stub shim.ChaincodeStubInterface) ([]string, error) {
 	
 	containerAsBytes, err := stub.GetState(containerIndexStr)
 	if err != nil {
-		return nil, errors.New("Failed to get container index")
+		return errors.New("Failed to get container index")
 	}
 	var containerIndex []string             //an array to clone container indices
 	json.Unmarshal(containerAsBytes, &containerIndex)
@@ -361,7 +361,7 @@ func  View_order(stub shim.ChaincodeStubInterface) ([]string, error) {
 		OrderID := orders.OpenOrders[0].OrderID
 		orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
-		return nil, errors.New("Failed to get openorders")
+		return  errors.New("Failed to get openorders")
 	}
 	ShipOrder := Order{} 
 	json.Unmarshal(orderAsBytes, &ShipOrder)
@@ -374,12 +374,12 @@ func  View_order(stub shim.ChaincodeStubInterface) ([]string, error) {
 		
 	a := []string{ShipOrder.OrderID,res.ContainerID}
 		init_logistics(stub,a)
-	return a,nil	
+	return nil	
 		
 		//t.read(stub,openOrdersStr)
 	}else{
                 stub.PutState("sorry",[]byte("we couldn't find a product for your choice of requirements"))
-		return nil,nil
+		return nil
         }
 
 
