@@ -33,7 +33,7 @@ var containerIndexStr = "_containerindex"    //This will be used as key and a va
 
 var openOrdersStr = "_openorders"	  // This will be the key, value will be a list of orders(technically - array of order structs)
 
-var coinIndexStr = "_coinindex"          //key - "_coinindex", value - an array of Coin Ids, no matter whom they are tagged to
+//var coinIndexStr = "_coinindex"          //key - "_coinindex", value - an array of Coin Ids, no matter whom they are tagged to
 
 type MilkContainer struct{
 
