@@ -528,11 +528,11 @@ func cointransfer( stub shim.ChaincodeStubInterface, args []string) ([]string, e
 	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
 	CoinID := "1x245"
 	
-	fmt.Println(Payment time, inside moneytransfer")
+	fmt.Println("Payment time, inside moneytransfer")
 	
 	assetAsBytes,err := stub.GetState(CoinID)
 	if err != nil{
-		fmt.Println("Something wrog happened")
+		fmt.Println("Something wrong happened while fetching coin details")
 	}
 	
 	Transfercoin := SupplyCoin{}
