@@ -171,7 +171,7 @@ var err error
 	fmt.Println("Creating milkcontainer asset")
 id := args[0]
 user := args[1]
-litres :=strconv.Atoi(args[2])
+litres,_ :=strconv.Atoi(args[2])
 	
 // Checking if the container already exists in the network
 milkAsBytes, err := stub.GetState(id) 
@@ -280,7 +280,7 @@ Openorder := Order{}
 Openorder.User = "Market"
 Openorder.Status = "pending"
 Openorder.OrderID = "abcd"
-Openorder.Litres = strconv.Atoi(args[0])
+Openorder.Litres,err = strconv.Atoi(args[0])
 orderAsBytes,_ := json.Marshal(Openorder)
 	
 err = stub.PutState(Openorder.OrderID,orderAsBytes)
