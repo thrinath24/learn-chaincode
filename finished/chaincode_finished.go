@@ -267,6 +267,21 @@ stub.PutState(id,coinAsBytes)
 	 fmt.Println("Coin created successfully, details are")
 	fmt.Printf("%+v\n", res)
 //t.read(stub,"res.CoinID")
+	
+	// append the container ID to the existing assets of the Supplier
+	userAssets := user +"Assets"
+	
+	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
+	asset := Asset{}
+	json.Unmarshal( assetAsBytes, &asset)
+	asset.User = user
+	asset.coinIDs = append(supplierasset.coinIDs, res.CoinID)
+	asset.Supplycoins += 1
+	assetAsBytes,_=  json.Marshal(asset)
+	stub.PutState(userAssets,assetAsBytes)
+	fmt.Println("Balance of %q" , user)
+       fmt.Printf("%+v\n", asset)
+
 return nil,nil
 }
 
