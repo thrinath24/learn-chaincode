@@ -269,6 +269,7 @@ stub.PutState(id,coinAsBytes)
 //t.read(stub,"res.CoinID")
 	
 	// append the container ID to the existing assets of the Supplier
+	/*
 	userAssets := user +"Assets"
 	
 	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
@@ -281,6 +282,7 @@ stub.PutState(id,coinAsBytes)
 	stub.PutState(userAssets,assetAsBytes)
 	fmt.Println("Balance of %q" , user)
        fmt.Printf("%+v\n", asset)
+ */
 
 return nil,nil
 }
