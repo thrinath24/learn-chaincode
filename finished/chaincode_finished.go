@@ -131,10 +131,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Create_coin(stub, args)	
         }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		res,err :=  t.Order_milk(stub,args)
-		jsonresp,_ := View_order(stub,args)
-		fmt.Println(jsonresp)
+		//jsonresp,_ := View_order(stub,args)
+		//fmt.Println(jsonresp)
 		
-		jsonresp,_ = init_logistics(stub,args)
+		jsonresp,_ := init_logistics(stub,args)
 		
 		jsonresp,_ = set_user(stub,args)
 		
@@ -289,7 +289,7 @@ if err != nil {
 		return nil, err
 }
 	//t.read(stub,"openOrdersStr")
-	a,_ = View_order(stub)
+	a,_1 := View_order(stub)
 	fmt.Println("After View order invocation from order milk")
 	fmt.Println(a)
 return nil,nil
@@ -369,15 +369,17 @@ func  View_order(stub shim.ChaincodeStubInterface) ([]string, error) {
 	
 	stub.PutState(OrderID,orderAsBytes)
 		
+	a := []string{ShipOrder.OrderID,res.ContainerID}
+	
+	return a,nil	
+		
 		//t.read(stub,openOrdersStr)
 	}else{
                 stub.PutState("sorry",[]byte("we couldn't find a product for your choice of requirements"))
+		return nil,nil
         }
 
 
-	a := []string{ShipOrder.OrderID,res.containerID}
-	
-	return a,nil	
 }
 
 func init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]string, error) {
