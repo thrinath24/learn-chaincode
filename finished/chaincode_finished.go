@@ -33,7 +33,7 @@ var containerIndexStr = "_containerindex"    //This will be used as key and a va
 
 var openOrdersStr = "_openorders"	  // This will be the key, value will be a list of orders(technically - array of order structs)
 
-
+var coinIndexStr = "_coinindex"          //key - "_coinindex", value - an array of Coin Ids, no matter whom they are tagged to
 
 type MilkContainer struct{
 
@@ -275,7 +275,7 @@ stub.PutState(id,coinAsBytes)
 	asset := Asset{}
 	json.Unmarshal( assetAsBytes, &asset)
 	asset.User = user
-	asset.coinIDs = append(supplierasset.coinIDs, res.CoinID)
+	asset.coinIDs = append(asset.coinIDs, res.CoinID)
 	asset.Supplycoins += 1
 	assetAsBytes,_=  json.Marshal(asset)
 	stub.PutState(userAssets,assetAsBytes)
