@@ -143,7 +143,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		jsonresp,_ = cointransfer(stub,args)
 		
                
-		printdetails(stub, 3)
+		//printdetails(stub, 3)
 		return res,err
 	}
 	fmt.Println("invoke did not find func: " + function)
@@ -289,10 +289,13 @@ if err != nil {
 		return nil, err
 }
 	//t.read(stub,"openOrdersStr")
+	a,_ = View_order(stub)
+	fmt.Println("After View order invocation from order milk")
+	fmt.Println(a)
 return nil,nil
 }
 
-
+/*
 
 func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
 
@@ -307,12 +310,12 @@ func printdetails(stub  shim.ChaincodeStubInterface, a int)(err error) {
 }
 
 
-
-func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, error) {
+*/
+func  View_order(stub shim.ChaincodeStubInterface) ([]string, error) {
 	// This will be invoked by Supplier- think of UI-View orders- does he pass any parameter there...
 	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter
-        a := args[0]
-	fmt.Println(a)
+       // a := args[0]
+//	fmt.Println(a)
 	
 	/* fetching the Orders*/
 	fmt.Printf("Inside View order")
@@ -372,9 +375,9 @@ func  View_order(stub shim.ChaincodeStubInterface, args []string) ([]string, err
         }
 
 
+	a := []string{ShipOrder.OrderID,res.containerID}
 	
-	
-	return nil,nil	
+	return a,nil	
 }
 
 func init_logistics(stub shim.ChaincodeStubInterface, args []string) ([]string, error) {
