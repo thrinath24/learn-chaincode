@@ -305,7 +305,7 @@ func (t *SimpleChaincode) Buy_milk(stub shim.ChaincodeStubInterface, args []stri
 //args[0]
 //"10"
 // customer asks for a qty, check if market has that much quantity, if there-create a container for customer with qty he asked, and subtract the same from Market
-
+	fmt.Println("Hi, welcome to Supply chain, we are inside Buy_milk")
 	quantity,_ := strconv.Atoi(args[0])
 	marketassetAsBytes, err := stub.GetState("MarketAssets")
 	if err != nil {
