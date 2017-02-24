@@ -253,6 +253,7 @@ func (t *SimpleChaincode) Create_coin(stub shim.ChaincodeStubInterface, args []s
 id := args[0]
 user:= args[1]
 //Check if coin already exists in network
+	fmt.Println(" Inside Create coin function")
 coinAsBytes , err := stub.GetState(id)
 if err != nil{
               return nil, errors.New("Failed to get details of given id")
