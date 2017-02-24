@@ -115,6 +115,15 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {       
 		return nil, err
 }
+	/ Resetting the Assets of Supplier,Market, Logistiscs.
+	
+	var emptyasset Asset
+	
+	
+	jsonAsBytes, _ = json.Marshal(emptyasset)                // this is the byte format format of empty Asset structure
+	err = stub.PutState("SupplierAssets",jsonAsBytes)        // key -Supplier assets and value is empty now --> Supplier has no assets
+	err = stub.PutState("MarketAssets", jsonAsBytes)         // key -Market assets and value is empty now --> Market has no assets
+	err = stub.PutState("LogisticsAssets", jsonAsBytes)      // key - Logistics assets and value is empty now --> Logistic has no assets
 	
 	fmt.Println("Successfully deployed the code and orders and assets are reset")
 	
@@ -269,9 +278,9 @@ stub.PutState(id,coinAsBytes)
 //t.read(stub,"res.CoinID")
 	
 	// append the container ID to the existing assets of the Supplier
-	/*
-	userAssets := user +"Assets"
 	
+	userAssets := user +"Assets"
+	fmt.Println("Updating ",userAssets)
 	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
 	asset := Asset{}
 	json.Unmarshal( assetAsBytes, &asset)
@@ -280,9 +289,9 @@ stub.PutState(id,coinAsBytes)
 	asset.Supplycoins += 1
 	assetAsBytes,_=  json.Marshal(asset)
 	stub.PutState(userAssets,assetAsBytes)
-	fmt.Println("Balance of %q" , user)
+	fmt.Println("Balance of " , user)
        fmt.Printf("%+v\n", asset)
- */
+
 
 return nil,nil
 }
