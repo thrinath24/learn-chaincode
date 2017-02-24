@@ -115,7 +115,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {       
 		return nil, err
 }
-	/ Resetting the Assets of Supplier,Market, Logistiscs.
+	// Resetting the Assets of Supplier,Market, Logistiscs.
 	
 	var emptyasset Asset
 	
