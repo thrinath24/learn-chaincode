@@ -145,7 +145,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		
 	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coin(stub, args)	
-        }else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
+        }else if function == "Buy_milk" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.Buy_milk(stub, args)	
+        }/*else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		res,err :=  t.Order_milk(stub,args)
 		//jsonresp,_ := View_order(stub,args)
 		//fmt.Println(jsonresp)
@@ -161,7 +163,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
                
 		//printdetails(stub, 3)
 		return res,err
-	}
+	}*/
 	fmt.Println("invoke did not find func: " + function)
 
 	return nil, errors.New("Received unknown function invocation: " + function)
@@ -297,8 +299,33 @@ return nil,nil
 }
 
 
+/*********************Buy milk - Customer interactio*******************/
 
-func (t *SimpleChaincode) Order_milk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Buy_milk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+//args[0]
+//"10"
+// customer asks for a qty, check if market has that much quantity, if there-create a container for customer with qty he asked, and subtract the same from Market
+
+	quantity := strconv.Atoi(args[0])
+	marketassetAsBytes, err := stub.GetState("MarketAssets")
+	if err != nil {
+		return nil, errors.New("Failed to get market asset")
+	}
+	Marketasset := Asset{}             
+	json.Unmarshal(marketassetAsBytes, &Marketasset )
+	Threshold=15
+	if (Marketasset.LitresofMilk - quantity <= Threshold){
+		a,b := Order_milk(stub,"20")
+		fmt.Println(a,b)
+	}
+	
+	return nil,nil
+}
+
+
+
+
+func Order_milk(stub shim.ChaincodeStubInterface, args string) ([]byte, error) {
 //"20"
 //litres
 var err error
@@ -306,7 +333,7 @@ Openorder := Order{}
 Openorder.User = "Market"
 Openorder.Status = "pending"
 Openorder.OrderID = "abcd"
-Openorder.Litres,err = strconv.Atoi(args[0])
+Openorder.Litres,err = strconv.Atoi(args)
 orderAsBytes,_ := json.Marshal(Openorder)
 	
 err = stub.PutState(Openorder.OrderID,orderAsBytes)
