@@ -306,14 +306,14 @@ func (t *SimpleChaincode) Buy_milk(stub shim.ChaincodeStubInterface, args []stri
 //"10"
 // customer asks for a qty, check if market has that much quantity, if there-create a container for customer with qty he asked, and subtract the same from Market
 
-	quantity := strconv.Atoi(args[0])
+	quantity,_ := strconv.Atoi(args[0])
 	marketassetAsBytes, err := stub.GetState("MarketAssets")
 	if err != nil {
 		return nil, errors.New("Failed to get market asset")
 	}
 	Marketasset := Asset{}             
 	json.Unmarshal(marketassetAsBytes, &Marketasset )
-	Threshold=15
+	Threshold := 15
 	if (Marketasset.LitresofMilk - quantity <= Threshold){
 		a,b := Order_milk(stub,"20")
 		fmt.Println(a,b)
