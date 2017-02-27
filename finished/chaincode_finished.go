@@ -504,6 +504,7 @@ func init_logistics(stub shim.ChaincodeStubInterface, args []string) ( error) {
 return nil
 }
 
+/*
 func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
 	
 // OrderId  ContainerID
@@ -532,6 +533,86 @@ func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
        
 	assetAsBytes,err = json.Marshal(container)
 	stub.PutState(ContainerID, assetAsBytes)    //Pushing the updated container  back to the ledger
+	
+	ShipOrder.Status = "Delivered"
+	orderAsBytes,err = json.Marshal(ShipOrder) 
+	
+	stub.PutState(OrderID,orderAsBytes)      //pushing the updated Order back to ledger
+		fmt.Printf("%+v\n", ShipOrder)
+	//Updating the orders list 
+		ordersAsBytes, err := stub.GetState(openOrdersStr)
+	if err != nil {
+		return errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(ordersAsBytes, &orders)	
+		
+		orders.OpenOrders[0].Status = ShipOrder.Status
+		ordersAsBytes,_ = json.Marshal(orders)
+		stub.PutState(openOrdersStr,ordersAsBytes)
+		checktheproduct(stub,args)
+		
+	}else
+        {
+                stub.PutState("setuser",[]byte("failure in this function"))
+                //t.read(stub,"setuser")
+                return nil
+        }
+
+
+return nil
+	//t.checktheproduct(stub,OrderID,ContainerID)
+}
+*/
+
+func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
+	
+// OrderId  ContainerID
+//args[0] args[1]
+	
+//So here we will set the user name in container ID to the one in Order ID and Status to Delivered - Asset Transfer
+	fmt.Println("Transferring asset owner ship")
+	OrderID := args[0]
+	ContainerID := args[1]
+//fetch order details
+       orderAsBytes, err := stub.GetState(OrderID)
+	if err != nil {
+		return  errors.New("Failed to get openorders")
+	}
+	ShipOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &ShipOrder)
+//fetch container details	
+	assetAsBytes,err := stub.GetState(ContainerID)
+	container := MilkContainer{}
+	json.Unmarshal(assetAsBytes, &container)
+
+	if (container.User == "Supplier"){
+	
+	container.User = ShipOrder.User             //ASSET TRANSFER
+	fmt.Printf("%+v\n", container)
+	fmt.Println("pushing the updated container back to ledger")
+	assetAsBytes,err = json.Marshal(container)
+	stub.PutState(ContainerID, assetAsBytes)    //Pushing the updated container  back to the ledger
+	
+	fmt.Println("Updating Supplier assets..")
+	supplierassetAsBytes,_ := stub.GetState("SupplierAssets")        // The same key which we used in Init function 
+	supplierasset := Asset{}
+	json.Unmarshal( supplierassetAsBytes, &supplierasset)
+		
+	userAssets := container.User +"Assets"
+	fmt.Println("Updating ",userAssets)
+	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
+	asset := Asset{}
+	json.Unmarshal( assetAsBytes, &asset)
+		
+	asset.LitresofMilk += container.Litres
+	supplierasset.LitresofMilk -= container.Litres
+		
+        supplierassetAsBytes,_=  json.Marshal(supplierasset)
+	stub.PutState("SupplierAssets",supplierassetAsBytes)
+		
+	assetAsBytes,_=  json.Marshal(asset)
+	stub.PutState(userAssets,assetAsBytes)
 	
 	ShipOrder.Status = "Delivered"
 	orderAsBytes,err = json.Marshal(ShipOrder) 
@@ -608,6 +689,7 @@ return nil
 
 }
 
+/*
 
 func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
@@ -649,6 +731,71 @@ func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 return nil
 	
 }
+*/
+
+func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
+	
+//args[0] 
+//coinID  
+	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
+	CoinID := args[0]
+	sender := args[1]
+	receiver := args[2]
+	
+	fmt.Println("Payment time, inside moneytransfer")
+	
+	assetAsBytes,err := stub.GetState(CoinID)
+	if err != nil{
+		fmt.Println("Something wrong happened while fetching coin details")
+	}
+	
+	Transfercoin := SupplyCoin{}
+	json.Unmarshal(assetAsBytes, &Transfercoin)
+	
+	if (Transfercoin.User == sender) {   // check if the market guy actually holds coin in his name
+	
+		Transfercoin.User = receiver
+		assetAsBytes,err = json.Marshal(Transfercoin)
+		stub.PutState(CoinID, assetAsBytes)
+		fmt.Printf("%+v\n", Transfercoin)
+	fmt.Println("Updating Supplier assets..")
+	supplierassetAsBytes,_ := stub.GetState("SupplierAssets")        // The same key which we used in Init function 
+	supplierasset := Asset{}
+	json.Unmarshal( supplierassetAsBytes, &supplierasset)
+		
+	userAssets := container.User +"Assets"
+	fmt.Println("Updating ",userAssets)
+	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
+	asset := Asset{}
+	json.Unmarshal( assetAsBytes, &asset)
+		
+		asset.Supplycoins  -= 1
+		supplierasset.Supplycoins += 1
+	
+	supplierassetAsBytes,_=  json.Marshal(supplierasset)
+	stub.PutState("SupplierAssets",supplierassetAsBytes)
+		
+	assetAsBytes,_=  json.Marshal(asset)
+	stub.PutState(userAssets,assetAsBytes)
+	
+		
+		fmt.Println("END OF PHASE 1")
+		return nil
+		
+	}else{
+	
+		fmt.Println("There was some issue in transferring")
+		//stub.PutState("cointransfer",[]byte("problem in coin transfer"))
+		//t.read(stub,"cointransfer")
+		return nil
+	}
+
+	
+return nil
+	
+}
+
+
 
 
 
