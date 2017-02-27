@@ -588,7 +588,11 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		
 		fmt.Println("Thanks, I got  the right product")
 		stub.PutState("Market Response",[]byte("Product received"))
-		cointransfer(stub,"1x245","Market","Supplier")
+		val b []string
+		b[0]= "1x245"
+		b[1] = "Market"
+		b[2] = "Supplier"
+		cointransfer(stub,b)
 		//t.cointransfer(stub,coinid) coinid -hard code it and send the coin id created by market
 		return nil
        }else{
