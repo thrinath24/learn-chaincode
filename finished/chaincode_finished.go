@@ -504,7 +504,7 @@ func init_logistics(stub shim.ChaincodeStubInterface, args []string) ( error) {
 return nil
 }
 
-/*
+
 func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
 	
 // OrderId  ContainerID
@@ -563,7 +563,9 @@ func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
 return nil
 	//t.checktheproduct(stub,OrderID,ContainerID)
 }
-*/
+
+
+/*
 
 func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
 	
@@ -644,7 +646,7 @@ return nil
 	//t.checktheproduct(stub,OrderID,ContainerID)
 }
 
-
+*/
 func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) {
 
 // args[0] args[1]
@@ -689,7 +691,7 @@ return nil
 
 }
 
-/*
+
 
 func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
@@ -731,7 +733,8 @@ func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 return nil
 	
 }
-*/
+
+/*
 
 func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
@@ -795,7 +798,7 @@ return nil
 	
 }
 
-
+*/
 
 
 
