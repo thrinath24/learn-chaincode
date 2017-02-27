@@ -588,7 +588,7 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		
 		fmt.Println("Thanks, I got  the right product")
 		stub.PutState("Market Response",[]byte("Product received"))
-		cointransfer(stub,"1x245")
+		cointransfer(stub,"1x245","Market","Supplier")
 		//t.cointransfer(stub,coinid) coinid -hard code it and send the coin id created by market
 		return nil
        }else{
@@ -605,12 +605,14 @@ return nil
 }
 
 
-func cointransfer( stub shim.ChaincodeStubInterface, args string) ( error) {
+func cointransfer( stub shim.ChaincodeStubInterface, args []string) ( error) {
 	
 //args[0] 
 //coinID  
 	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
-	CoinID := args
+	CoinID := args[0]
+	sender := args[1]
+	receiver := args[2]
 	
 	fmt.Println("Payment time, inside moneytransfer")
 	
@@ -622,9 +624,9 @@ func cointransfer( stub shim.ChaincodeStubInterface, args string) ( error) {
 	Transfercoin := SupplyCoin{}
 	json.Unmarshal(assetAsBytes, &Transfercoin)
 	
-	if (Transfercoin.User == "Market") {   // check if the market guy actually holds coin in his name
+	if (Transfercoin.User == sender) {   // check if the market guy actually holds coin in his name
 	
-		Transfercoin.User = "Supplier"
+		Transfercoin.User = receiver
 		assetAsBytes,err = json.Marshal(Transfercoin)
 		stub.PutState(CoinID, assetAsBytes)
 		fmt.Printf("%+v\n", Transfercoin)
