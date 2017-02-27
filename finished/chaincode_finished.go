@@ -1,18 +1,3 @@
-/*
-Copyright IBM Corp 2016 All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		 http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 package main
 
@@ -33,7 +18,6 @@ var containerIndexStr = "_containerindex"    //This will be used as key and a va
 
 var openOrdersStr = "_openorders"	  // This will be the key, value will be a list of orders(technically - array of order structs)
 
-//var coinIndexStr = "_coinindex"          //key - "_coinindex", value - an array of Coin Ids, no matter whom they are tagged to
 
 type MilkContainer struct{
 
@@ -115,7 +99,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {       
 		return nil, err
 }
-	// Resetting the Assets of Supplier,Market, Logistiscs.
+	// Resetting the Assets of Supplier,Market, Logistics, Customer
 	
 	var emptyasset Asset
 	
@@ -124,6 +108,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	err = stub.PutState("SupplierAssets",jsonAsBytes)        // key -Supplier assets and value is empty now --> Supplier has no assets
 	err = stub.PutState("MarketAssets", jsonAsBytes)         // key -Market assets and value is empty now --> Market has no assets
 	err = stub.PutState("LogisticsAssets", jsonAsBytes)      // key - Logistics assets and value is empty now --> Logistic has no assets
+	//err = stub.PutState("CustomerAssets", jsonAsBytes)      // key - Customer assets and value is empty now --> Customer has no assets
 	
 	fmt.Println("Successfully deployed the code and orders and assets are reset")
 	
