@@ -44,13 +44,13 @@ type MilkContainer struct{
 
 }
 
-
+/*
 type SupplyCoin struct{
 
         CoinID string `json:"coinid"`
         User string        `json:"user"`
 }
-
+*/
 type Order struct{
         OrderID string `json:"orderid"`
        User string `json:"user"`
@@ -67,7 +67,7 @@ type Asset struct{
 	  User string        `json:"user"`
 	containerIDs []string `json:"containerids"`
 	LitresofMilk int `json:"litresofmilk"`
-	coinIDs []string `json:"coinids"`
+	//coinIDs []string `json:"coinids"`
 	Supplycoins int `json:"supplycoins"`
 }
 
@@ -246,7 +246,7 @@ stub.PutState(res.ContainerID,milkAsBytes)
 
 
 
-
+/*
 func (t *SimpleChaincode) Create_coin(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 //"1x245" "Market/Logistics"
@@ -298,10 +298,34 @@ stub.PutState(id,coinAsBytes)
 
 return nil,nil
 }
+*/
+func (t *SimpleChaincode) Create_coins(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+//"Market/Logistics",                          "100"
+//args[0]                                     args[1]
+//targeted owner                         No of supplycoins     
+
+	user:= args[0]
+	userAssets := user +"Assets"
+        assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
+	asset := Asset{}
+	json.Unmarshal( assetAsBytes, &asset)
+	asset.User = user
+	asset.Supplycoins = strconv.Atoi(args[1])
+	assetAsBytes,_=  json.Marshal(asset)
+	stub.PutState(userAssets,assetAsBytes)
+	fmt.Println("Balance of " , user)
+        fmt.Printf("%+v\n", asset)
+
+
+return nil,nil
+}
+
+
 
 
 /*********************Buy milk - Customer interactio*******************/
-
+/*
 func (t *SimpleChaincode) Buy_milk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 //args[0]
 //"10"
@@ -316,6 +340,32 @@ func (t *SimpleChaincode) Buy_milk(stub shim.ChaincodeStubInterface, args []stri
 	json.Unmarshal(marketassetAsBytes, &Marketasset )
 	Threshold := 15
 	if (Marketasset.LitresofMilk - quantity <= Threshold){
+		a,b := Order_milk(stub,"20")
+		fmt.Println(a,b)
+	}
+	
+	return nil,nil
+}
+
+*/
+
+func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+//args[0]
+//"10"
+// customer asks for a qty, check if market has that much quantity, if there-create a container for customer with qty he asked, and subtract the same from Market
+	fmt.Println("Hi , we are inside Buy_milk")
+	quantity,_ := strconv.Atoi(args[0])
+	marketassetAsBytes, err := stub.GetState("MarketAssets")
+	Marketasset := Asset{}             
+	json.Unmarshal(marketassetAsBytes, &Marketasset )
+	
+	
+	
+	
+	if (Marketasset.LitresofMilk >= quantity ){
+		fmt.Println("Will write a function by name shiptocustomer, no logistics here, directly delivered to customer")
+	}else{
+	        fmt.Println("There isn't sufficient quantity with me, Giving order to Supplier/Manufactirer")
 		a,b := Order_milk(stub,"20")
 		fmt.Println(a,b)
 	}
@@ -672,7 +722,7 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		fmt.Println("Thanks, I got  the right product")
 		stub.PutState("Market Response",[]byte("Product received"))
 		var b [3]string
-		b[0]= "1x245"
+		b[0]= "50"
 		b[1] = "Market"
 		b[2] = "Supplier"
 		cointransfer(stub,b)
@@ -692,6 +742,53 @@ return nil
 }
 
 
+func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
+	
+//args[0]             args[1]         args[2]
+//No of supplycoin      Sender         Reciever   
+	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
+	transferamount := strconv.Atoi(args[0])
+	sender := args[1]                               // this thing should be given by us in UI background
+	receiver := args[2]                            // this will be given by the user on web page
+	
+	fmt.Println("Payment time, inside moneytransfer")
+	
+        senderAssets := sender +"Assets"
+        senderassetAsBytes,_ := stub.GetState(senderAssets)        // The same key which we used in Init function 
+	senderasset := Asset{}
+	json.Unmarshal( senderassetAsBytes, &senderasset)
+	
+	
+	receiverAssets := receiver+"Assets"
+        receiverassetAsBytes,_ := stub.GetState(receiverAssets)        // The same key which we used in Init function 
+	receiverasset := Asset{}
+	json.Unmarshal( receiverassetAsBytes, &receiverasset)
+	
+	if ( senderasset.Supplycoins >= transferamount){
+		
+	senderasset.Supplycoins -= transferamount
+	receiverasset.Supplycoins += transferamount
+	
+		  senderassetAsBytes,_=  json.Marshal(	senderasset)
+	stub.PutState(senderAssets,  senderassetAsBytes)
+	fmt.Println("Balance of " , sender)
+       fmt.Printf("%+v\n", senderasset)
+		
+		receiverassetAsBytes,_=  json.Marshal(receiverasset)
+	stub.PutState( receiverAssets,receiverassetAsBytes)
+	fmt.Println("Balance of " , receiver)
+       fmt.Printf("%+v\n", receiverasset)
+	}else {
+		fmt.Println(" Failed to transfer amount")
+	}
+	
+	
+return nil
+	
+}
+
+
+/*
 
 func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
@@ -733,7 +830,7 @@ func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 return nil
 	
 }
-
+*/
 /*
 
 func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
@@ -797,6 +894,9 @@ func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 return nil
 	
 }
+
+
+
 
 */
 
