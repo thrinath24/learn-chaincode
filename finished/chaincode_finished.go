@@ -588,7 +588,7 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		
 		fmt.Println("Thanks, I got  the right product")
 		stub.PutState("Market Response",[]byte("Product received"))
-		var b []string
+		var b [3]string
 		b[0]= "1x245"
 		b[1] = "Market"
 		b[2] = "Supplier"
@@ -609,7 +609,7 @@ return nil
 }
 
 
-func cointransfer( stub shim.ChaincodeStubInterface, args []string) ( error) {
+func cointransfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
 //args[0] 
 //coinID  
