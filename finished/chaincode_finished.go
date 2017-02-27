@@ -143,10 +143,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		
 		return t.Create_milkcontainer(stub, args)
 		
-	}else if function == "Create_coin" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.Create_coin(stub, args)	
-        }else if function == "Buy_milk" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.Buy_milk(stub, args)	
+	}else if function == "Create_coins" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.Create_coins(stub, args)	
+        }else if function == "BuyMilkfromRetailer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.BuyMilkfromRetailer(stub, args)	
         }/*else if function == "Order_milk"{                      // To order something - invoked by market - params - litres
 		res,err :=  t.Order_milk(stub,args)
 		//jsonresp,_ := View_order(stub,args)
@@ -311,7 +311,7 @@ func (t *SimpleChaincode) Create_coins(stub shim.ChaincodeStubInterface, args []
 	asset := Asset{}
 	json.Unmarshal( assetAsBytes, &asset)
 	asset.User = user
-	asset.Supplycoins = strconv.Atoi(args[1])
+	asset.Supplycoins,_ = strconv.Atoi(args[1])
 	assetAsBytes,_=  json.Marshal(asset)
 	stub.PutState(userAssets,assetAsBytes)
 	fmt.Println("Balance of " , user)
@@ -725,8 +725,8 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		b[0]= "50"
 		b[1] = "Market"
 		b[2] = "Supplier"
-		cointransfer(stub,b)
-		//t.cointransfer(stub,coinid) coinid -hard code it and send the coin id created by market
+		//cointransfer(stub,b)
+		transfer(stub,b)
 		return nil
        }else{
                 stub.PutState("checktheproduct",[]byte("failure"))
@@ -747,7 +747,7 @@ func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 //args[0]             args[1]         args[2]
 //No of supplycoin      Sender         Reciever   
 	//lets keep it simple for now, just fetch the coin from ledger, change username to Supplier and End of Story
-	transferamount := strconv.Atoi(args[0])
+	transferamount,_ := strconv.Atoi(args[0])
 	sender := args[1]                               // this thing should be given by us in UI background
 	receiver := args[2]                            // this will be given by the user on web page
 	
