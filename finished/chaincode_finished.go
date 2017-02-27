@@ -588,7 +588,7 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		
 		fmt.Println("Thanks, I got  the right product")
 		stub.PutState("Market Response",[]byte("Product received"))
-		val b []string
+		var b []string
 		b[0]= "1x245"
 		b[1] = "Market"
 		b[2] = "Supplier"
