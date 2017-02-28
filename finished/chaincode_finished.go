@@ -247,7 +247,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
         Openorder.OrderID = args[0]
         Openorder.Litres, _ = strconv.Atoi(args[1])
 	fmt.Println("Hello customer, your order has been generated successfully, you can track it with id in the following details")
-	fmt.Println("%+v\n",,Openorder)
+	fmt.Println("%+v\n",Openorder)
         orderAsBytes,_ := json.Marshal(Openorder)
 	stub.PutState(Openorder.OrderID,orderAsBytes)
 	
