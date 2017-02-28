@@ -263,12 +263,13 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 	
 	View_orderbyMarket(stub)
 	
-	
+	// I think there should be a break here. Market should login go to view orders this should show what all orders he have
+	// Then he should select a order that should trigger everything
 	
 	return nil,nil
 }
 
-func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
+func  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
 // This will be invoked by MARKET- think of UI-View orders- does he pass any parameter there...
 // so here also no need of any arguments.
 	
@@ -278,6 +279,7 @@ func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface) (
 	ordersAsBytes, _ := stub.GetState(customerOrdersStr)
 	var orders AllOrders
 	json.Unmarshal(ordersAsBytes, &orders)	
+	//This should stop here.. In UI it should display all the orders
 	quantity := orders.OpenOrders[0].Litres
 	
 	marketassetAsBytes, _ := stub.GetState("MarketAssets")
