@@ -124,6 +124,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Create_coins(stub, args)	
         }else if function == "BuyMilkfromRetailer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.BuyMilkfromRetailer(stub, args)	
+        }else if function == "View_orderbyMarket" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.View_orderbyMarket(stub, args)	
         }
 	fmt.Println("invoke did not find func: " + function)
 
@@ -275,7 +277,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 	return nil,nil
 }
 
-func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
+func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,args []string) ([]byte, error) {
 // This will be invoked by MARKET- think of UI-View orders- does he pass any parameter there...
 // so here also no need of any arguments.
 	
