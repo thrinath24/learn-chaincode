@@ -718,8 +718,9 @@ func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
        fmt.Printf("%+v\n", receiverasset)
 		return nil
 	}else {
+		str = "Failed to transfer amount from" + sender + "to" + receiver
 		
-		return  errors.New("Failed to transfer amount from",sender,"to",receiver)
+		return  errors.New(str)
 	}
 	
 	
