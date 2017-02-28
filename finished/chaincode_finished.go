@@ -267,7 +267,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 }
 	
 	
-	t.View_orderbyMarket(stub)
+	//t.View_orderbyMarket(stub)
 	
 	// I think there should be a break here. Market should login go to view orders this should show what all orders he have
 	// Then he should select a order that should trigger everything
