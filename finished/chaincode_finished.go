@@ -116,8 +116,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	// Handle different functions
 	if function == "init" {
 		return t.Init(stub, "init", args)
-	} else if function == "write" {
-		return t.write(stub, args)
 	}else if function == "Create_milkcontainer" {		//creates a milk container-invoked by supplier   
 		
 		return t.Create_milkcontainer(stub, args)
@@ -346,10 +344,9 @@ func delivertocustomer(stub shim.ChaincodeStubInterface ,args string) (error){
 	
         customerassetAsBytes,_ := stub.GetState("CustomerAssets")        // The same key which we used in Init function 
 	customerasset := Asset{}
-	json.Unmarshal( assetAsBytes, &customerasset)
+	json.Unmarshal( customerassetAsBytes, &customerasset)
 	
-				 
-        marketassetAsBytes, err := stub.GetState("MarketAssets")
+           marketassetAsBytes, err := stub.GetState("MarketAssets")
 	Marketasset := Asset{}             
 	json.Unmarshal(marketassetAsBytes, &Marketasset )
 	
@@ -377,12 +374,15 @@ func delivertocustomer(stub shim.ChaincodeStubInterface ,args string) (error){
 	
 	
 	
-	transfer("30","Customer","Market")
+	var b [3]string
+		b[0]= "30"
+		b[1] = "Customer"
+		b[2] = "Market"
 		
-	
+		transfer(stub,b)
 	fmt.Println("FINALLLLLYYYY, END OF THE STORY")
          
-    return nil,nil
+    return nil
 
 }
 
