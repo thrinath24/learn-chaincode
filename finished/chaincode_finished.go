@@ -314,7 +314,7 @@ func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,ar
 		OrderID := orders.OpenOrders[0].OrderID
 		orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
-		return  errors.New("Failed to get openorders")
+		return nil, errors.New("Failed to get openorders")
 	}
 	        ShipOrder := Order{} 
 	        json.Unmarshal(orderAsBytes, &ShipOrder)
@@ -331,7 +331,7 @@ func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,ar
 	}
 	
 	
-	return nil
+	return nil,nil
 
 }
 
