@@ -268,7 +268,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 	return nil,nil
 }
 
-func  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
+func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
 // This will be invoked by MARKET- think of UI-View orders- does he pass any parameter there...
 // so here also no need of any arguments.
 	
