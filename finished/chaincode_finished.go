@@ -124,8 +124,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Create_coins(stub, args)	
         }else if function == "BuyMilkfromRetailer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.BuyMilkfromRetailer(stub, args)	
-        }else if function == "View_orderbyMarket" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.View_orderbyMarket(stub, args)	
         }
 	fmt.Println("invoke did not find func: " + function)
 
@@ -269,7 +267,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 }
 	
 	
-	//t.View_orderbyMarket(stub)
+	View_orderbyMarket(stub)
 	
 	// I think there should be a break here. Market should login go to view orders this should show what all orders he have
 	// Then he should select a order that should trigger everything
@@ -277,11 +275,11 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 	return nil,nil
 }
 
-func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,args []string) ([]byte, error) {
+func  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
 // This will be invoked by MARKET- think of UI-View orders- does he pass any parameter there...
 // so here also no need of any arguments.
 	
-	fmt.Printf("Inside View order , being viewed by MArket")
+	fmt.Printf("Inside View order , being viewed by Market")
 	
 	
 	ordersAsBytes, _ := stub.GetState(customerOrdersStr)
@@ -314,7 +312,7 @@ func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,ar
 		OrderID := orders.OpenOrders[0].OrderID
 		orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
-		return nil, errors.New("Failed to get openorders")
+		return  errors.New("Failed to get openorders")
 	}
 	        ShipOrder := Order{} 
 	        json.Unmarshal(orderAsBytes, &ShipOrder)
@@ -331,7 +329,7 @@ func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,ar
 	}
 	
 	
-	return nil,nil
+	return nil
 
 }
 
