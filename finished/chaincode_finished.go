@@ -280,7 +280,7 @@ func  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
 	json.Unmarshal(ordersAsBytes, &orders)	
 	quantity := orders.OpenOrders[0].Litres
 	
-	marketassetAsBytes, err := stub.GetState("MarketAssets")
+	marketassetAsBytes, _ := stub.GetState("MarketAssets")
 	Marketasset := Asset{}             
 	json.Unmarshal(marketassetAsBytes, &Marketasset )
 	
