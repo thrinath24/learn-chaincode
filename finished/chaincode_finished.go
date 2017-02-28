@@ -589,6 +589,8 @@ func  set_user(stub shim.ChaincodeStubInterface, args []string) ( error) {
 	asset.LitresofMilk += container.Litres
 	supplierasset.LitresofMilk -= container.Litres
 		
+	
+		
 	supplierassetAsBytes,_=  json.Marshal(supplierasset)
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
 	assetAsBytes,_=  json.Marshal(asset)
@@ -651,8 +653,18 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) 
 		b[0]= "50"
 		b[1] = "Market"
 		b[2] = "Supplier"
-		//cointransfer(stub,b)
-		transfer(stub,b)
+		
+		err = transfer(stub,b)
+		if err!=nil{
+			return err
+		}
+	        b[0]= "25"
+		b[1] = "Supplier"
+		b[2] = "Logistics"
+		err = transfer(stub,b)
+		if err!=nil{
+			return err
+		}
 		return nil
        }else{
                 stub.PutState("checktheproduct",[]byte("failure"))
@@ -704,8 +716,10 @@ func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	stub.PutState( receiverAssets,receiverassetAsBytes)
 	fmt.Println("Balance of " , receiver)
        fmt.Printf("%+v\n", receiverasset)
+		return nil
 	}else {
-		fmt.Println(" Failed to transfer amount")
+		
+		return  errors.New("Failed to transfer amount from",sender,"to",receiver)
 	}
 	
 	
