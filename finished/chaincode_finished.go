@@ -140,15 +140,21 @@ var err error
 
 // "1x22" "supplier" 20 
 // args[0] args[1] args[2] 
+	if len(args) != 3{
+		return nil, errors.New("Please enter all the details")
+	}
 	fmt.Println("Creating milkcontainer asset")
 id := args[0]
 user := args[1]
-litres,_ :=strconv.Atoi(args[2])
+litres,err:=strconv.Atoi(args[2])
+	if err != nil {
+		return nil, errors.New("Litres argument must be a numeric string")
+	}
 	
 // Checking if the container already exists in the network
 milkAsBytes, err := stub.GetState(id) 
 if err != nil {
-		return nil, errors.New("Failed to get details og given id") 
+		return nil, errors.New("Failed to get details of given id") 
 }
 
 res := MilkContainer{} 
@@ -261,7 +267,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 }
 	
 	
-	View_orderbyMarket(stub)
+	t.View_orderbyMarket(stub)
 	
 	// I think there should be a break here. Market should login go to view orders this should show what all orders he have
 	// Then he should select a order that should trigger everything
@@ -269,7 +275,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 	return nil,nil
 }
 
-func  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
+func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface) ( error) {
 // This will be invoked by MARKET- think of UI-View orders- does he pass any parameter there...
 // so here also no need of any arguments.
 	
