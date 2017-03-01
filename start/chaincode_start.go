@@ -630,29 +630,31 @@ func(t *SimpleChaincode) pickuptheproduct(stub shim.ChaincodeStubInterface, args
 // So in view order, he will see his orders, clicking on the order will show to whom and which container
 //There will be a button "pickuptheproduct" which is equivalent to real life pick up --status will be in transit
 //There will be one more button there only "Delivertheproduct"
-
+//As of march 3, lets pass market order Id only as argument
+//How can we update the order placed by market...without a notification
+//here we are passing market order id only
 	//args[0] args[1]
-	// OrderID, ContainerID
-	OrderID := args[0]
-	//ContainerID := args[1]
+	// MarketOrderID, ContainerID
+	MarketOrderID := args[0]
+	
 	
 	// fetch the order details and update status as "in transit"
-	orderAsBytes, err := stub.GetState(OrderID)
+	orderAsBytes, err := stub.GetState(MarketOrderID)
 	if err != nil {
 		return  nil,errors.New("Failed to get openorders")
 	}
-	ShipOrder := Order{} 
-	json.Unmarshal(orderAsBytes, &ShipOrder)
+	MarketOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &MarketOrder)
 	
-	ShipOrder.Status = "In transit to market"
+	MarketOrder.Status = "In transit to market"
 	 
-	orderAsBytes,err = json.Marshal(ShipOrder)
+	orderAsBytes,err = json.Marshal(MarketOrder)
 	
-	stub.PutState(OrderID,orderAsBytes)
+	stub.PutState(MarketOrderID,orderAsBytes)
 	
 	fmt.Printf("%+v\n", ShipOrder)
 	
-	
+	fmt.Println("Container is in transit")
 	
 return nil,nil
 }
@@ -660,8 +662,8 @@ return nil,nil
 
 func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args []string) ([]byte , error) {
 	
-// SupplierOrderID  
-//args[0] 
+// SupplierOrderID      //MarketOrderID
+//args[0]               //args[1]
 	
 //So here we will set the user name in container ID to the one in Order ID and Status to Delivered - Asset Transfer
 // Why should logistics guy check if the supplier actually holds the container?????????
@@ -710,29 +712,47 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
 	assetAsBytes,_=  json.Marshal(asset)
 	stub.PutState(userAssets,assetAsBytes)
-	// update the Order and push back to ledger
-	ShipOrder.Status = "Delivered to market"
-	orderAsBytes,err = json.Marshal(ShipOrder) 
-	stub.PutState(OrderID,orderAsBytes)      
+	
+//update the MarketOrder and push back to ledger
+		
+	MarketOrderID := args[1]
+	
+//fetch order details
+       orderAsBytes, err = stub.GetState(MarketOrderID)
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	MarketOrder := Order{} 
+	json.Unmarshal(orderAsBytes, &ShipOrder)
+	
+		
+	MarketOrder.Status = "Delivered to market"
+	orderAsBytes,err = json.Marshal(MarketOrder) 
+	stub.PutState(MarketOrderID,orderAsBytes)      
 	fmt.Printf("%+v\n", ShipOrder)
-	checktheproduct(stub,args)
+	
+	var b [2]string
+	b[0] = args[1]
+	b[1] = ContainerID
+
+	checktheproduct(stub,b)
 		
 	}else
         {
                 stub.PutState("delivertomarket",[]byte("failure in this function"))
                 //t.read(stub,"setuser")
-                return nil
+                return nil,nil
         }
 
 
-return nil
+return nil,nil
 }
 
 
-func  checktheproduct(stub shim.ChaincodeStubInterface, args []string) ( error) {
+func  checktheproduct(stub shim.ChaincodeStubInterface, args [2]string) ( error) {
 
 // args[0] args[1]
-// OrderID, ContainerID
+// MarketOrderID, ContainerID
 	fmt.Println("Let us check the product")
 	OrderID := args[0]
 	ContainerID := args[1]
