@@ -20,11 +20,13 @@ var openOrdersStr = "_openorders"	  // This will be the key, value will be a lis
 
 var customerOrdersStr = "_customerorders"    // This will  be the key, value will be a list of orders placed by customer - wil be called by Customer
 
+var supplierOrdersStr = "_supplierorders"     // this will be key, value will be a list of orders placed by supplier to logistics
 
 type userandlitres struct{
 	User string        `json:"user"`
 	Litres int       `json:"litres"`
 }
+
 type MilkContainer struct{
 
         ContainerID string `json:"containerid"`
@@ -38,6 +40,13 @@ type Order struct{
        Status string `json:"status"`
        Litres int   `json:"litres"`
 }
+
+type SupplierOrder struct{
+        OrderID string `json:"orderid"`
+	To whom string 'json:"to whom"`
+	ContainerID string 'json:"containerid"
+}
+
 
 type AllOrders struct{
 	OpenOrders []Order `json:"open_orders"`
@@ -90,7 +99,10 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {       
 		return nil, err
 }
-	
+	err = stub.PutState(supplierOrdersStr, jsonAsBytes)                 //So the value for key is null
+	if err != nil {       
+		return nil, err
+}
 	// Resetting the Assets of Supplier,Market, Logistics, Customer
 	
 	var emptyasset Asset
@@ -562,10 +574,10 @@ if ( supplierasset.LitresofMilk >= OrderID.Litres ){
 	        orderAsBytes,err = json.Marshal(ShipOrder)
                 stub.PutState(OrderID,orderAsBytes)
 		     
-		     
 		
-	        a := []string{ShipOrder.OrderID,res.ContainerID}
-		init_logistics
+		
+	        a := []string{ShipOrder.User,res.ContainerID}
+		placeordertologistics(stub,a)
 	        return nil,nil	
 	        }
 	}
@@ -581,7 +593,7 @@ if ( supplierasset.LitresofMilk >= OrderID.Litres ){
 
 }
 
-func init_logistics(stub shim.ChaincodeStubInterface, args []string) ( error) {
+func VieworderbyLogistics(stub shim.ChaincodeStubInterface, args []string) ( error) {
 	
 	
 	
