@@ -30,7 +30,7 @@ type userandlitres struct{
 type MilkContainer struct{
 
         ContainerID string `json:"containerid"`
-	Userlist  []userandlitres    'json:"userlist"`
+	Userlist  []userandlitres    `json:"userlist"`
 
 }
 
@@ -44,7 +44,7 @@ type Order struct{
 type SupplierOrder struct{
         OrderID string `json:"orderid"`
 	To whom string 'json:"to whom"`
-	ContainerID string 'json:"containerid"
+	ContainerID string `json:"containerid`
 }
 
 
