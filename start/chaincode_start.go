@@ -446,8 +446,8 @@ if (Marketasset.LitresofMilk >= quantity ){
 
 
 func(t *SimpleChaincode) Order_milktoSupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-// "cus123"           "abcd"   "20"
-// CustomerOrderID    OrderID litres
+// "cus123"           "abcd"   
+// CustomerOrderID    OrderID 
 
 var err error
 
@@ -543,12 +543,11 @@ func(t *SimpleChaincode)  checkstockbysupplier(stub shim.ChaincodeStubInterface,
 //checking if Supplier has the stock	
 if (Supplierasset.LitresofMilk >= quantity ){
 		fmt.Println("Enough stock is available, finding a suitable container.....")
-		
-length := len(Supplierasset.containerIDs)
+		length := len(Supplierasset.containerIDs)
  		for i:0 ; i<length; i++{
 		
         // fetching the container details one by one
-		       containerassetAsBytes, err := stub.GetState(supplierasset.ContainerIDs[i])
+		       containerassetAsBytes, err := stub.GetState(supplierasset.containerIDs[i])
 		       res := MilkContainer{} 
 		       json.Unmarshal(containerassetAsBytes,&res)
         // Checking if the present container in loop has the quantity of Market asked
@@ -575,11 +574,8 @@ length := len(Supplierasset.containerIDs)
 	        fmt.Println("Successfully created container, check stock again to know your container details ") 
 	        // can't call function again..loop hole
 		return nil,nil
-        }
-	
-
-
-
+}
+	return nil,nil
 }
 
 func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
