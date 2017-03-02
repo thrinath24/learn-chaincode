@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"encoding/json"
 	"strconv"
+	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -430,7 +431,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	               fmt.Println("%v\n", ShipOrder)
 	               orderAsBytes,err = json.Marshal(ShipOrder)
                        stub.PutState(OrderID,orderAsBytes)
-	               b := []string{"30", "Customer", "Market"}
+	               b := [3]string{"30", "Customer", "Market"}
 	               transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
 	               fmt.Println("FINALLLLLYYYY, END OF THE STORY")
          
@@ -579,7 +580,7 @@ if (Supplierasset.LitresofMilk >= quantity ){
 		var b [3]string
 		b[0] = "1x223"
 		b[1] = "Supplier"
-		b[2],_ = strconv.Itoa(ShipOrder.Litres)
+		b[2] = strconv.Itoa(ShipOrder.Litres)
 		Create_milkcontainer(stub,b)
 		
 	        fmt.Println("Successfully created container, check stock again to know your container details ") 
@@ -616,7 +617,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	}
 	var orders AllSupplierOrders
 	json.Unmarshal(ordersAsBytes, &orders)				
-	orders.Supplierorderslist  = append(Supplierorderslist  , ShipOrder);		//append the new order - Openorder
+	orders.Supplierorderslist  = append(Supplierorderslist, ShipOrder);		//append the new order - Openorder
 	fmt.Println(" appended ",ShipOrder.OrderID,"to existing orders placed by Supplier to logistics")
 	jsonAsBytes, _ := json.Marshal(orders)
 	err = stub.PutState(supplierOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
@@ -675,7 +676,7 @@ func(t *SimpleChaincode) pickuptheproduct(stub shim.ChaincodeStubInterface, args
 	
 	stub.PutState(MarketOrderID,orderAsBytes)
 	
-	fmt.Printf("%+v\n", ShipOrder)
+	fmt.Printf("%+v\n", MarketOrder)
 	
 	fmt.Println("Container is in transit")
 	
@@ -696,7 +697,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 //fetch order details
        orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
-		return  errors.New("Failed to get openorders")
+		return  nil,errors.New("Failed to get openorders")
 	}
 	ShipOrder := SupplierOrder{} 
 	json.Unmarshal(orderAsBytes, &ShipOrder)
@@ -709,7 +710,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 
 	if (container.Userlist[0].User == "Supplier"){
 	
-	container.Userlist[0].User = ShipOrder.ToWhom           //ASSET TRANSFER
+	container.Userlist[0].User = ShipOrder.Towhom           //ASSET TRANSFER
 	fmt.Printf("%+v\n", container)
 	fmt.Println("pushing the updated container back to ledger")
 	assetAsBytes,err = json.Marshal(container)
@@ -720,20 +721,20 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	supplierasset := Asset{}
 	json.Unmarshal( supplierassetAsBytes, &supplierasset)
 		
-	userAssets := container.User +"Assets"
+	userAssets := "MarketAssets"
 	fmt.Println("Updating ",userAssets)
 	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
 	asset := Asset{}
 	json.Unmarshal( assetAsBytes, &asset)
 		
-	asset.LitresofMilk += container.Litres
+	asset.LitresofMilk += container.Userlist[0].Litres
         asset.containerIDs = append(asset.containerIDs,container.ContainerID)
 
-	supplierasset.LitresofMilk -= container.Litres
+	supplierasset.LitresofMilk -= container.Userlist[0].Litres
         
         length := len(supplierasset.containerIDs)
 
-        for i := 0; i < len; i++{
+        for i := 0; i < length; i++{
 
               if (supplierasset.containerIDs[i] == container.ContainerID){
 
