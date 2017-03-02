@@ -43,8 +43,8 @@ type Order struct{
 
 type SupplierOrder struct{
         OrderID string `json:"orderid"`
-	To whom string 'json:"to whom"`
-	ContainerID string `json:"containerid`
+	Towhom string `json:"towhom"`
+	ContainerID string `json:"containerid"`
 }
 
 
@@ -97,7 +97,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 /* Resetting the order list - Making sure the value corresponding to openOrdersStr is empty */
        var orders AllOrders                                            // new instance of Orderlist 
-	jsonAsBytes, _ = json.Marshal(orders)				//  it will be null initially
+	jsonAsBytes, _ := json.Marshal(orders)				//  it will be null initially
 	err = stub.PutState(openOrdersStr, jsonAsBytes)                 //So the value for key is null
 	if err != nil {       
 		return nil, err
@@ -145,18 +145,29 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	}else if function == "Create_coins" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coins(stub, args)	
-        }else if function == "BuyMilkfromRetailer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+        }else if function == "BuyMilkfromRetailer" { //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.BuyMilkfromRetailer(stub, args)	
-        }else if function == "View_orderbyMarket" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+        }else if function == "View_orderbyMarket" {  //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.View_orderbyMarket(stub, args)	
-        }else if function == "shiptocustomer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.shiptocustomer(stub, args)	
+        }else if function == "checkstockbymarket" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.checkstockbymarket(stub, args)	
+        }else if function == "delivertocustomer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.delivertocustomer(stub, args)	
         }else if function == "Order_milktoSupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Order_milktoSupplier(stub, args)	
         }else if function == " View_orderbySupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t. View_orderbySupplier(stub, args)	
-        }else if function == "shiptologistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.shiptologistics(stub, args)	
+        }else if function == "checkstockbysupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.checkstockbysupplier(stub, args)	
+        }else if function == "calllogistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.calllogistics(stub, args)	
+        }else if function == "VieworderbyLogistics"{
+
+                return t.VieworderbyLogistics(stub,args)
+        }else if function == "pickuptheproduct" {
+                return t.pickuptheproduct(stub,args)
+        }else if function == "delivertomarket" {
+                return t.delivertomarket(stub,args)
         }
 	fmt.Println("invoke did not find func: " + function)
 
@@ -275,7 +286,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 		return nil, errors.New(" No of coins must be a numeric string")
 	}
 	fmt.Println("Hello customer, your order has been generated successfully, you can track it with id in the following details")
-	fmt.Println("%+v\n",,Openorder)
+	fmt.Println("%+v\n",Openorder)
         orderAsBytes,_ := json.Marshal(Openorder)
 	stub.PutState(Openorder.OrderID,orderAsBytes)
 	
@@ -315,8 +326,7 @@ func(t *SimpleChaincode)  View_orderbyMarket(stub shim.ChaincodeStubInterface,ar
 
 
 
-func (t *SimpleChaincode)  checkstockbymarket(stub shim.ChaincodeStubInterface, args[]string) ([]byte, error)
-{
+func (t *SimpleChaincode)  checkstockbymarket(stub shim.ChaincodeStubInterface, args[]string) ([]byte, error){
 	// In UI, beside each order one button to ship to customer, one button to check stock
 	// we will extract details of orderId
 	//we will exract asset balance of Market
@@ -363,7 +373,7 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 
 	//args[0] 
 	//OrderID  
-	OrderID := args
+	OrderID := args[0]
 	orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
 		return  errors.New("Failed to get openorders")
@@ -372,6 +382,10 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 	json.Unmarshal(orderAsBytes, &ShipOrder)
 	
 	quantity := ShipOrder.Litres
+
+        marketassetAsBytes, _ := stub.GetState("MarketAssets")
+	Marketasset := Asset{}             
+	json.Unmarshal(marketassetAsBytes, &Marketasset )
 	
 if (Marketasset.LitresofMilk >= quantity ){
 	
@@ -383,7 +397,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	Marketasset := Asset{}             
 	json.Unmarshal(marketassetAsBytes, &Marketasset )
 	
-	id := Marketasset.ContainerIDs[0]
+	id := Marketasset.containerIDs[0]
 	
 	milkAsBytes, err := stub.GetState(id) 
         if err != nil {
@@ -403,7 +417,7 @@ if (Marketasset.LitresofMilk >= quantity ){
                       res.Userlist[1].Litres = quantity
   //updating customer assets
 	              Customerasset.LitresofMilk += quantity
-		      Customerasset.ContainerIds = append(Customerasset.ContainerIds ,id)
+		      Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
 	              Marketasset.LitresofMilk -= quantity
 	
 	              customerassetAsBytes,_ = json.Marshal(Customerasset)
@@ -455,7 +469,7 @@ Openorder.Status = "Order placed to Supplier "
 Openorder.OrderID = args[1]
 Openorder.Litres = 5 * quantity
 
-orderAsBytes,_ := json.Marshal(Openorder)
+orderAsBytes,_ = json.Marshal(Openorder)
 stub.PutState(Openorder.OrderID,orderAsBytes)
 fmt.Println("your Order has been generated successfully")
 fmt.Printf("%+v\n", Openorder)
@@ -499,7 +513,7 @@ func(t *SimpleChaincode)  View_orderbySupplier(stub shim.ChaincodeStubInterface,
 	return nil,nil
 }
 
-func(t *SimpleChaincode)  Checkstockbysupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func(t *SimpleChaincode)  checkstockbysupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 /***FUNCTIONALITY EXPLAINED*******/
 // In UI, beside each order one button to call logistics, one button to check stock
 // we will extract details of orderId
@@ -530,30 +544,32 @@ func(t *SimpleChaincode)  Checkstockbysupplier(stub shim.ChaincodeStubInterface,
 if (Supplierasset.LitresofMilk >= quantity ){
 		fmt.Println("Enough stock is available, finding a suitable container.....")
 		
-		for i,val := range supplierasset.ContainerIDs{
+length := len(Supplierasset.containerIDs)
+ 		for i:0 ; i<length; i++{
 		
         // fetching the container details one by one
 		       containerassetAsBytes, err := stub.GetState(supplierasset.ContainerIDs[i])
 		       res := MilkContainer{} 
 		       json.Unmarshal(containerassetAsBytes,&res)
         // Checking if the present container in loop has the quantity of Market asked
-	              if (res.Litres == ShipOrder.Litres) {
+	              if (res.Userlist[0].Litres == ShipOrder.Litres){
 		              fmt.Println("Found a suitable container, details are ")
 			      fmt.Printf("%+v\n", res)
 			      //Updating the status of market order
 		              ShipOrder.Status = "Ready to be shipped to market"   // send the updated status to market
 	                      orderAsBytes,err = json.Marshal(ShipOrder)
                               stub.PutState(OrderID,orderAsBytes)
-		              return nil,nil	
+		              return nil,nil
 	              }
-	        }
-	        return nil, error.New("Supplier has the quantity but not all in one container, this will be covered in next phase")
+	  }
+
+	   // return nil, errors.New("Supplier has the quantity but not all in one container, this will be covered in next phase")
 }else{
 	        fmt.Println("Right now there isn't sufficient quantity , Create a new container")
 		var b [3]string
 		b[0] = "1x223"
 		b[1] = "Supplier"
-		b[2],_ = strconv.itoA(Shiporder.Litres)
+		b[2],_ = strconv.Itoa(Shiporder.Litres)
 		Create_milkcontainer(stub,b)
 		
 	        fmt.Println("Successfully created container, check stock again to know your container details ") 
@@ -568,7 +584,7 @@ if (Supplierasset.LitresofMilk >= quantity ){
 
 func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 	
-//args[0]   //To Whom  //Container ID
+//args[0]   //ToWhom  //Container ID
 //OrderID   //Market   //"1x223"
 	
 // I think its fair only, in practical case, we will tell adrress for a postman to deliver, same thing here also
@@ -576,7 +592,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	
 	ShipOrder := SupplierOrder{}
 	ShipOrder.OrderID = args[0]
-	Shiporder.To whom = args[1]
+	Shiporder.Towhom = args[1]
 	ShipOrder.ContainerID = args[2]
 	
 	orderAsBytes, _=json.Marshal(ShipOrder)
@@ -686,7 +702,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 
 	if (container.Userlist[0].User == "Supplier"){
 	
-	container.Userlist[0].User = ShipOrder.To Whom           //ASSET TRANSFER
+	container.Userlist[0].User = ShipOrder.ToWhom           //ASSET TRANSFER
 	fmt.Printf("%+v\n", container)
 	fmt.Println("pushing the updated container back to ledger")
 	assetAsBytes,err = json.Marshal(container)
@@ -704,7 +720,20 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	json.Unmarshal( assetAsBytes, &asset)
 		
 	asset.LitresofMilk += container.Litres
+        asset.containerIDs = append(asset.containerIDs,container.ContainerID)
+
 	supplierasset.LitresofMilk -= container.Litres
+        
+        length := len(supplierasset.containerIDs)
+
+        for i := 0; i < len; i++{
+
+              if (supplierasset.containerIDs[i] == container.ContainerID){
+
+                   supplierasset.containerIDs = append(supplierasset.containerIDs[:i],supplierasset.containerIDs[i+1:]...)
+                   break
+              }
+        }
 		
 	
 		
