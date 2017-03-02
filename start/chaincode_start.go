@@ -391,7 +391,7 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 	fmt.Println(quantity)
         marketassetAsBytes, _ := stub.GetState("MarketAssets")
 	Marketasset := Asset{}             
-	json.Unmarshal(marketassetAsBytes, &Marketasset )
+	json.Unmarshal(marketassetAsBytes, &Marketasset)
 	fmt.Println("%+v\n", Marketasset) 
 if (Marketasset.LitresofMilk >= quantity ){
 	fmt.Println("Inside deliver to customer, market has quantity)
@@ -723,7 +723,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	if (container.Userlist[0].User == "Supplier"){
 	
 	container.Userlist[0].User = ShipOrder.Towhom           //ASSET TRANSFER
-	fmt.Printf("%+v\n", container)
+	fmt.Println("%+v\n", container)
 	fmt.Println("pushing the updated container back to ledger")
 	assetAsBytes,err = json.Marshal(container)
 	stub.PutState(ContainerID, assetAsBytes)    //Pushing the updated container  back to the ledger
