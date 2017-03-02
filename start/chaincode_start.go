@@ -376,7 +376,7 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 	OrderID := args[0]
 	orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
-		return  errors.New("Failed to get openorders")
+		return  nil,errors.New("Failed to get openorders")
 	}
 	ShipOrder := Order{} 
 	json.Unmarshal(orderAsBytes, &ShipOrder)
@@ -430,7 +430,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	               fmt.Println("%v\n", ShipOrder)
 	               orderAsBytes,err = json.Marshal(ShipOrder)
                        stub.PutState(OrderID,orderAsBytes)
-	               b := []stub{"30", "Customer", "Market"}
+	               b := []string{"30", "Customer", "Market"}
 	               transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
 	               fmt.Println("FINALLLLLYYYY, END OF THE STORY")
          
@@ -562,7 +562,7 @@ if (Supplierasset.LitresofMilk >= quantity ){
 	              }
 	  }
 */
-	containerassetAsBytes, err := stub.GetState(supplierasset.containerIDs[0])
+	containerassetAsBytes, err := stub.GetState(Supplierasset.containerIDs[0])
 	res := MilkContainer{} 
 	json.Unmarshal(containerassetAsBytes,&res)
         // Checking if the present container in loop has the quantity of Market asked
@@ -579,7 +579,7 @@ if (Supplierasset.LitresofMilk >= quantity ){
 		var b [3]string
 		b[0] = "1x223"
 		b[1] = "Supplier"
-		b[2],_ = strconv.Itoa(Shiporder.Litres)
+		b[2],_ = strconv.Itoa(ShipOrder.Litres)
 		Create_milkcontainer(stub,b)
 		
 	        fmt.Println("Successfully created container, check stock again to know your container details ") 
@@ -599,10 +599,10 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	
 	ShipOrder := SupplierOrder{}
 	ShipOrder.OrderID = args[0]
-	Shiporder.Towhom = args[1]
+	ShipOrder.Towhom = args[1]
 	ShipOrder.ContainerID = args[2]
 	
-	orderAsBytes, _=json.Marshal(ShipOrder)
+	orderAsBytes, _ :=json.Marshal(ShipOrder)
 	stub.PutState( ShipOrder.OrderID, orderAsBytes)
 	
 	fmt.Println("Successfully placed order to Logistics")
