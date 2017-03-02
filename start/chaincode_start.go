@@ -741,7 +741,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
         asset.containerIDs = append(asset.containerIDs,container.ContainerID)
 
 	supplierasset.LitresofMilk -= container.Userlist[0].Litres
-        
+        /*
         length := len(supplierasset.containerIDs)
 
         for i := 0; i < length; i++{
@@ -753,7 +753,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
               }
         }
 		
-	
+	*/
 		
 	supplierassetAsBytes,_=  json.Marshal(supplierasset)
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
@@ -770,7 +770,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 		return nil, errors.New("Failed to get openorders")
 	}
 	MarketOrder := Order{} 
-	json.Unmarshal(orderAsBytes, &ShipOrder)
+	json.Unmarshal(orderAsBytes, &MarketOrder)
 	
 		
 	MarketOrder.Status = "Delivered to market"
