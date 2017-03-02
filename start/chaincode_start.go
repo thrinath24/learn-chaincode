@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"encoding/json"
 	"strconv"
-	"strings"
+	
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
