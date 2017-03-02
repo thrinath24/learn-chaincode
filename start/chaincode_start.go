@@ -107,7 +107,9 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {       
 		return nil, err
 }
-	err = stub.PutState(supplierOrdersStr, jsonAsBytes)                 //So the value for key is null
+	var suporders AllSupplierOrders
+	suporderAsBytes,_ := json.Marshal(suporders)
+	err = stub.PutState(supplierOrdersStr, suporderAsBytes)                 //So the value for key is null
 	if err != nil {       
 		return nil, err
 }
@@ -615,9 +617,9 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	if err != nil {
 		return nil, errors.New("Failed to get  existing list of  orders placed by Supplier to logistics")
 	}
-	var orders AllSupplierOrders
-	json.Unmarshal(ordersAsBytes, &orders)				
-	//orders.Supplierorderslist  = append(Supplierorderslist, ShipOrder);		//append the new order - Openorder
+	var suporders AllSupplierOrders
+	json.Unmarshal(ordersAsBytes, &suporders)				
+	orders.Supplierorderslist  = append(Supplierorderslist, ShipOrder);		//append the new order - Openorder
 	fmt.Println(" appended ",ShipOrder.OrderID,"to existing orders placed by Supplier to logistics")
 	jsonAsBytes, _ := json.Marshal(orders)
 	err = stub.PutState(supplierOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
