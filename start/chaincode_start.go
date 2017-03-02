@@ -544,7 +544,7 @@ func(t *SimpleChaincode)  checkstockbysupplier(stub shim.ChaincodeStubInterface,
 if (Supplierasset.LitresofMilk >= quantity ){
 		fmt.Println("Enough stock is available, finding a suitable container.....")
 		length := len(Supplierasset.containerIDs)
- 		for i:0 ; i<length; i++{
+ 		/*for i:0 ; i<length; i++{
 		
         // fetching the container details one by one
 		       containerassetAsBytes, err := stub.GetState(supplierasset.containerIDs[i])
@@ -561,7 +561,18 @@ if (Supplierasset.LitresofMilk >= quantity ){
 		              return nil,nil
 	              }
 	  }
-
+*/
+	containerassetAsBytes, err := stub.GetState(supplierasset.containerIDs[0])
+	res := MilkContainer{} 
+	json.Unmarshal(containerassetAsBytes,&res)
+        // Checking if the present container in loop has the quantity of Market asked
+	              
+	if (res.Userlist[0].Litres == ShipOrder.Litres){
+	
+	fmt.Println("Found a suitable container, below is the ID of the container, use it while placing order to Logistics")
+	fmt.Println(Supplierasset.containerIDs[0])
+	}
+	
 	   // return nil, errors.New("Supplier has the quantity but not all in one container, this will be covered in next phase")
 }else{
 	        fmt.Println("Right now there isn't sufficient quantity , Create a new container")
