@@ -806,7 +806,7 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args [2]string) ( error)
 	json.Unmarshal(assetAsBytes, &Deliveredcontainer)
 
 //check and transfer coins
-	if (Deliveredcontainer.User == "Market" && Deliveredcontainer.Litres == ShipOrder.Litres) {
+	if (Deliveredcontainer.Userlist[0].User == "Market" && Deliveredcontainer.Userlist[0].Litres == ShipOrder.Litres) {
 		
 		fmt.Println("Thanks, I got  the right product, transferring amount to Supplier/Manufacturer")
 		stub.PutState("Market Response",[]byte("Product received"))
