@@ -54,7 +54,7 @@ type AllOrders struct{
 }
 
 type AllSupplierOrders struct {
-	Supplierorderslist []SupplierOrder `json:"open_orders"`
+	Supplierorderslist []SupplierOrder `json:"Supplierorderslist"`
 }
 
 	
