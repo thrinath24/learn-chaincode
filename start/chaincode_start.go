@@ -617,7 +617,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	}
 	var orders AllSupplierOrders
 	json.Unmarshal(ordersAsBytes, &orders)				
-	orders.Supplierorderslist  = append(Supplierorderslist, ShipOrder);		//append the new order - Openorder
+	//orders.Supplierorderslist  = append(Supplierorderslist, ShipOrder);		//append the new order - Openorder
 	fmt.Println(" appended ",ShipOrder.OrderID,"to existing orders placed by Supplier to logistics")
 	jsonAsBytes, _ := json.Marshal(orders)
 	err = stub.PutState(supplierOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
