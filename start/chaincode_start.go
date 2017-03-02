@@ -158,8 +158,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.delivertocustomer(stub, args)	
         }else if function == "Order_milktoSupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Order_milktoSupplier(stub, args)	
-        }else if function == " View_orderbySupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t. View_orderbySupplier(stub, args)	
+        }else if function == " VieworderbySupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.VieworderbySupplier(stub, args)	
         }else if function == "checkstockbysupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.checkstockbysupplier(stub, args)	
         }else if function == "calllogistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
@@ -218,9 +218,11 @@ if res.ContainerID == id{
 //If not present, create it and Update ledger, containerIndexStr, Assets of Supplier
 //Creation
 res.ContainerID = id
+	newuser := userandlitres{}
+	newuser.User = user
+	newuser.Litres = litres
+	res.Userlist = append(res.Userlist,newuser)
 
-res.Userlist[0].User = user
-res.Userlist[0].Litres = litres
 milkAsBytes, _ =json.Marshal(res)
 
 stub.PutState(res.ContainerID,milkAsBytes)
@@ -289,7 +291,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 		return nil, errors.New(" No of coins must be a numeric string")
 	}
 	fmt.Println("Hello customer, your order has been generated successfully, you can track it with id in the following details")
-	fmt.Println("%+v\n",Openorder)
+	fmt.Println("%v+\n",Openorder)
         orderAsBytes,_ := json.Marshal(Openorder)
 	stub.PutState(Openorder.OrderID,orderAsBytes)
 	
@@ -498,7 +500,7 @@ return nil,nil
 
 
 
-func(t *SimpleChaincode)  View_orderbySupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func(t *SimpleChaincode)  VieworderbySupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	// This will be invoked by Supplier in UI-View orders- does he pass any parameter there...
 	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter in angular js
       
