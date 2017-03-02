@@ -392,15 +392,16 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
         marketassetAsBytes, _ := stub.GetState("MarketAssets")
 	Marketasset := Asset{}             
 	json.Unmarshal(marketassetAsBytes, &Marketasset)
-	fmt.Println("%+v\n", Marketasset) 
+	fmt.Printf("%+v\n", Marketasset) 
+	 customerassetAsBytes, _ := stub.GetState("CustomerAssets")
+	Customerasset := Asset{}             
+	json.Unmarshal(customerassetAsBytes, &Customerasset)
+	fmt.Printf("%+v\n", Customerasset) 
 if (Marketasset.LitresofMilk >= quantity ){
 	fmt.Println("Inside deliver to customer, market has quantity")
 	
-        customerassetAsBytes,_ := stub.GetState("CustomerAssets")        // The same key which we used in Init function 
-	Customerasset := Asset{}
-	json.Unmarshal( customerassetAsBytes, &Customerasset)
-	
-	id := Marketasset.containerIDs[0]
+        
+	//id := Marketasset.containerIDs[0]
 	id = "1x223"
 	
 	milkAsBytes, err := stub.GetState(id) 
@@ -411,7 +412,10 @@ if (Marketasset.LitresofMilk >= quantity ){
         res := MilkContainer{} 
         json.Unmarshal(milkAsBytes, &res)
 		
-	fmt.Println("%+v\n", res)
+	fmt.Printf("%+v\n", res)
+	
+	
+	
 	
 	
    // here we are assuming only one container is der and it has enough stock to provide
@@ -425,12 +429,13 @@ if (Marketasset.LitresofMilk >= quantity ){
 	        newuser.Litres = quantity
 
 		res.Userlist = append(res.Userlist,newuser) 
-		fmt.Println("%+v\n", res)
+		fmt.Printf("%+v\n", res)
 		
   //updating customer assets
+		/*
 	              Customerasset.LitresofMilk += quantity
-		fmt.Println("before apending")
-		   Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
+		      fmt.Println("before apending")
+	//	   Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
 			    fmt.Println("after appending")
 			    Marketasset.LitresofMilk -= quantity
 	
@@ -439,9 +444,9 @@ if (Marketasset.LitresofMilk >= quantity ){
 	
 	               marketassetAsBytes,_ = json.Marshal(Marketasset)
 	               stub.PutState("MarketAssets",marketassetAsBytes)
-	
+	*/
 	               ShipOrder.Status ="Delivered to Customer"
-	               fmt.Println("%v\n", ShipOrder)
+	               fmt.Printf("%+v\n", ShipOrder)
 	               orderAsBytes,err = json.Marshal(ShipOrder)
                        stub.PutState(OrderID,orderAsBytes)
 	               b := [3]string{"30", "Customer", "Market"}
