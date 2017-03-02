@@ -394,7 +394,7 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 	json.Unmarshal(marketassetAsBytes, &Marketasset)
 	fmt.Println("%+v\n", Marketasset) 
 if (Marketasset.LitresofMilk >= quantity ){
-	fmt.Println("Inside deliver to customer, market has quantity)
+	fmt.Println("Inside deliver to customer, market has quantity")
 	
         customerassetAsBytes,_ := stub.GetState("CustomerAssets")        // The same key which we used in Init function 
 	Customerasset := Asset{}
@@ -429,7 +429,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 		
   //updating customer assets
 	              Customerasset.LitresofMilk += quantity
-		fmt.Println("before apending)
+		fmt.Println("before apending")
 		   Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
 			    fmt.Println("after appending")
 			    Marketasset.LitresofMilk -= quantity
