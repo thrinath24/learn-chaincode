@@ -54,7 +54,7 @@ type AllOrders struct{
 }
 
 type AllSupplierOrders struct {
-	List []SupplierOrder `json:"list"`
+	OpenOrders []SupplierOrder `json:"open_orders"`
 }
 
 	
@@ -624,7 +624,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	}
 	var suporders AllSupplierOrders
 	json.Unmarshal(ordersAsBytes, &suporders)				
-	suporders.List  = append(List, ShipOrder);		//append the new order - Openorder
+	suporders.OpenOrders  = append(OpenOrders, ShipOrder);		//append the new order - Openorder
 	fmt.Println(" appended ",ShipOrder.OrderID,"to existing orders placed by Supplier to logistics")
 	jsonAsBytes, _ := json.Marshal(suporders)
 	err = stub.PutState(supplierOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
