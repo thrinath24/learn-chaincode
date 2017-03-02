@@ -402,7 +402,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	
         
 	//id := Marketasset.containerIDs[0]
-	id = "1x223"
+	id := "1x223"
 	
 	milkAsBytes, err := stub.GetState(id) 
         if err != nil {
