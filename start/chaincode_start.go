@@ -63,7 +63,7 @@ type AllSupplierOrders struct {
 
 type Asset struct{
 	  User string        `json:"user"`
-	containerIDs []string `json:"containerids"`
+	containerIDs []string `json:"containerIDs"`
 	LitresofMilk int `json:"litresofmilk"`
 	Supplycoins int `json:"supplycoins"`
 }
@@ -158,7 +158,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.delivertocustomer(stub, args)	
         }else if function == "Order_milktoSupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Order_milktoSupplier(stub, args)	
-        }else if function == " VieworderbySupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+        }else if function == "View_orderbySupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.View_orderbySupplier(stub, args)	
         }else if function == "checkstockbysupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.checkstockbysupplier(stub, args)	
@@ -291,7 +291,7 @@ func (t *SimpleChaincode) BuyMilkfromRetailer(stub shim.ChaincodeStubInterface, 
 		return nil, errors.New(" No of coins must be a numeric string")
 	}
 	fmt.Println("Hello customer, your order has been generated successfully, you can track it with id in the following details")
-	fmt.Println("%v+\n",Openorder)
+	fmt.Println("%+v\n",Openorder)
         orderAsBytes,_ := json.Marshal(Openorder)
 	stub.PutState(Openorder.OrderID,orderAsBytes)
 	
@@ -378,6 +378,7 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 
 	//args[0] 
 	//OrderID  
+	fmt.Println("Inside deliver to customer function")
 	OrderID := args[0]
 	orderAsBytes, err := stub.GetState(OrderID)
 	if err != nil {
@@ -385,24 +386,22 @@ func(t *SimpleChaincode) delivertocustomer(stub shim.ChaincodeStubInterface ,arg
 	}
 	ShipOrder := Order{} 
 	json.Unmarshal(orderAsBytes, &ShipOrder)
-	
+	fmt.Println("%+v\n", ShipOrder)
 	quantity := ShipOrder.Litres
-
+	fmt.Println(quantity)
         marketassetAsBytes, _ := stub.GetState("MarketAssets")
 	Marketasset := Asset{}             
 	json.Unmarshal(marketassetAsBytes, &Marketasset )
-	
+	fmt.Println("%+v\n", Marketasset) 
 if (Marketasset.LitresofMilk >= quantity ){
+	fmt.Println("Inside deliver to customer, market has quantity)
 	
         customerassetAsBytes,_ := stub.GetState("CustomerAssets")        // The same key which we used in Init function 
 	Customerasset := Asset{}
 	json.Unmarshal( customerassetAsBytes, &Customerasset)
 	
-        marketassetAsBytes, err := stub.GetState("MarketAssets")
-	Marketasset := Asset{}             
-	json.Unmarshal(marketassetAsBytes, &Marketasset )
-	
-	id := Marketasset.containerIDs[0]
+	//id := Marketasset.containerIDs[0]
+	id := "1x223"
 	
 	milkAsBytes, err := stub.GetState(id) 
         if err != nil {
@@ -412,6 +411,8 @@ if (Marketasset.LitresofMilk >= quantity ){
         res := MilkContainer{} 
         json.Unmarshal(milkAsBytes, &res)
 		
+	fmt.Println(res)
+	
    // here we are assuming only one container is der and it has enough stock to provide
 	if ( res.Userlist[0].Litres - quantity >0) {
                     
@@ -422,10 +423,11 @@ if (Marketasset.LitresofMilk >= quantity ){
 	newuser.Litres = quantity
 
 		res.Userlist = append(res.Userlist,newuser) 
-                      
+		fmt.Println("%+v\n", res)
+		
   //updating customer assets
 	              Customerasset.LitresofMilk += quantity
-		      Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
+		//      Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
 	              Marketasset.LitresofMilk -= quantity
 	
 	              customerassetAsBytes,_ = json.Marshal(Customerasset)
