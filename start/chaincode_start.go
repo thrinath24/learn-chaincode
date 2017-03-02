@@ -159,7 +159,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
         }else if function == "Order_milktoSupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Order_milktoSupplier(stub, args)	
         }else if function == " VieworderbySupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.VieworderbySupplier(stub, args)	
+		return t.View_orderbySupplier(stub, args)	
         }else if function == "checkstockbysupplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.checkstockbysupplier(stub, args)	
         }else if function == "calllogistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
@@ -503,23 +503,24 @@ return nil,nil
 
 
 
-func(t *SimpleChaincode)  VieworderbySupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	// This will be invoked by Supplier in UI-View orders- does he pass any parameter there...
-	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter in angular js
-      
+func(t *SimpleChaincode)  View_orderbySupplier(stub shim.ChaincodeStubInterface,args []string) ([]byte, error) {
+// This will be invoked by MARKET- think of UI-View orders- does he pass any parameter there...
+// so here also no need of any arguments.
 	
-/* fetching the Orders*/
-	fmt.Printf("Hello Supplier, here are the orders placed to you by Market")
+	fmt.Printf("Hello Supplier, these are the orders placed to  you by Market")
 	
 	
 	ordersAsBytes, _ := stub.GetState(openOrdersStr)
-	
 	var orders AllOrders
 	json.Unmarshal(ordersAsBytes, &orders)	
-	
+	//This should stop here.. In UI it should display all the orders - beside each order -one button "ship to customer"
+	//If we click on any order, it should call query for that OrderID. So it will be enough if we update OrderID and push it to ledger
 	fmt.Println(orders)
-	return nil,nil
+	 return nil,nil
 }
+
+
+
 
 func(t *SimpleChaincode)  checkstockbysupplier(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 /***FUNCTIONALITY EXPLAINED*******/
@@ -574,13 +575,15 @@ if (Supplierasset.LitresofMilk >= quantity ){
 	res := MilkContainer{} 
 	json.Unmarshal(containerassetAsBytes,&res)
         // Checking if the present container in loop has the quantity of Market asked
-	              
+	/*              
 	if (res.Userlist[0].Litres == ShipOrder.Litres){
 	
 	fmt.Println("Found a suitable container, below is the ID of the container, use it while placing order to Logistics")
 	fmt.Println(Supplierasset.containerIDs[0])
 	}
-	
+	*/
+	fmt.Println("Found a suitable container, below is the ID of the container, use it while placing order to Logistics")
+	fmt.Println(res)
 	   // return nil, errors.New("Supplier has the quantity but not all in one container, this will be covered in next phase")
 }else{
 	        fmt.Println("Right now there isn't sufficient quantity , Create a new container")
