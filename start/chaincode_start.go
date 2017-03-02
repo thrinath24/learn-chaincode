@@ -616,7 +616,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	fmt.Println("Successfully placed order to Logistics")
 	fmt.Println("%+v\n", ShipOrder)
 	
-	
+	/*
 	//Add the new Supplier order to market orders list
 	ordersAsBytes, err := stub.GetState(supplierOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
 	if err != nil {
@@ -631,7 +631,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	if err != nil {
 		return nil, err
         }
-	
+	*/
 	
 	return nil,nil
 
