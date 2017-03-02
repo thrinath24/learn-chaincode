@@ -417,9 +417,12 @@ if (Marketasset.LitresofMilk >= quantity ){
                     
    //updating the container details, bcz it is shared now
 		      res.Userlist[0].Litres -= quantity // bringing down 
+		newuser := userandlitres{}
+	newuser.User = "Customer"
+	newuser.Litres = quantity
 
-                      res.Userlist[1].User = "Customer"
-                      res.Userlist[1].Litres = quantity
+		res.Userlist = append(res.Userlist,newuser) 
+                      
   //updating customer assets
 	              Customerasset.LitresofMilk += quantity
 		      Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
