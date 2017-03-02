@@ -400,8 +400,8 @@ if (Marketasset.LitresofMilk >= quantity ){
 	Customerasset := Asset{}
 	json.Unmarshal( customerassetAsBytes, &Customerasset)
 	
-	//id := Marketasset.containerIDs[0]
-	id := "1x223"
+	id := Marketasset.containerIDs[0]
+	id = "1x223"
 	
 	milkAsBytes, err := stub.GetState(id) 
         if err != nil {
@@ -411,24 +411,28 @@ if (Marketasset.LitresofMilk >= quantity ){
         res := MilkContainer{} 
         json.Unmarshal(milkAsBytes, &res)
 		
-	fmt.Println(res)
+	fmt.Println("%+v\n", res)
+	
 	
    // here we are assuming only one container is der and it has enough stock to provide
 	if ( res.Userlist[0].Litres - quantity >0) {
+		fmt.Println("yo yo..its about to complete")
                     
    //updating the container details, bcz it is shared now
 		      res.Userlist[0].Litres -= quantity // bringing down 
 		newuser := userandlitres{}
-	newuser.User = "Customer"
-	newuser.Litres = quantity
+	        newuser.User = "Customer"
+	        newuser.Litres = quantity
 
 		res.Userlist = append(res.Userlist,newuser) 
 		fmt.Println("%+v\n", res)
 		
   //updating customer assets
 	              Customerasset.LitresofMilk += quantity
-		//      Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
-	              Marketasset.LitresofMilk -= quantity
+		fmt.Println("before apending)
+		   Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
+			    fmt.Println("after appending")
+			    Marketasset.LitresofMilk -= quantity
 	
 	              customerassetAsBytes,_ = json.Marshal(Customerasset)
 	              stub.PutState("CustomerAssets",customerassetAsBytes)
