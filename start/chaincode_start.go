@@ -42,10 +42,13 @@ type Order struct{
        Litres int   `json:"litres"`
 }
 
-type SupplierOrder struct{
-        OrderID string `json:"orderid"`
+
+type SupplierOrder struct {
+   
+    OrderId string  `json:"orderid"`
 	Towhom string `json:"towhom"`
 	ContainerID string `json:"containerid"`
+	
 }
 
 
@@ -53,11 +56,12 @@ type AllOrders struct{
 	OpenOrders []Order `json:"open_orders"`
 }
 
-type AllSupplierOrders struct {
-	OpenOrders []SupplierOrder `json:"open_orders"`
-}
 
-	
+type AllSupplierOrders struct {
+
+      SupplierOrdersList []SupplierOrder  `supplierOrdersList`
+
+}
 	
 
 
@@ -633,7 +637,7 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	fmt.Println("Successfully placed order to Logistics")
 	fmt.Println("%+v\n", ShipOrder)
 	
-	/*
+	
 	//Add the new Supplier order to market orders list
 	ordersAsBytes, err := stub.GetState(supplierOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
 	if err != nil {
@@ -641,14 +645,14 @@ func (t *SimpleChaincode)  calllogistics(stub shim.ChaincodeStubInterface, args 
 	}
 	var suporders AllSupplierOrders
 	json.Unmarshal(ordersAsBytes, &suporders)				
-	suporders.OpenOrders  = append(OpenOrders, ShipOrder);		//append the new order - Openorder
+	suporders.SupplierOrdersList  = append(suporders.SupplierOrdersList, ShipOrder);		//append the new order - Openorder
 	fmt.Println(" appended ",ShipOrder.OrderID,"to existing orders placed by Supplier to logistics")
 	jsonAsBytes, _ := json.Marshal(suporders)
 	err = stub.PutState(supplierOrdersStr, jsonAsBytes)		  // Update the value of the key openOrdersStr
 	if err != nil {
 		return nil, err
         }
-	*/
+	
 	
 	return nil,nil
 
