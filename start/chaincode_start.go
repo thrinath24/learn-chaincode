@@ -461,7 +461,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	               fmt.Printf("%+v\n", ShipOrder)
 	               orderAsBytes,err = json.Marshal(ShipOrder)
                        stub.PutState(OrderID,orderAsBytes)
-		
+	/*	
         customerordersAsBytes, err := stub.GetState(customerOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
 	if err != nil {
 		return nil, errors.New("Failed to get openorders")
@@ -476,7 +476,8 @@ if (Marketasset.LitresofMilk >= quantity ){
                         stub.PutState(customerOrdersStr, ordersAsBytes)
 			}
 	       }
-	               b := [3]string{"30", "Customer", "Market"}
+	  */
+		b := [3]string{"30", "Customer", "Market"}
 	               transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
 	               fmt.Println("FINALLLLLYYYY, END OF THE STORY")
          
