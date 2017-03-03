@@ -818,7 +818,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 		
 	assetAsBytes,_ = stub.GetState(userAssets)        // The same key which we used in Init function 
 	json.Unmarshal( assetAsBytes, &asset)
-	 fmt.Printf("%+v\n", marketasset)
+	 fmt.Printf("%+v\n", asset)
 //update the MarketOrder and push back to ledger
 		
 	MarketOrderID := args[1]
