@@ -106,7 +106,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 /* Resetting the customer and market order list  */
        var orders AllOrders                                            // new instance of Orderlist 
-	jsonAsBytes, _ := json.Marshal(orders)				//  it will be null initially
+	jsonAsBytes, _ = json.Marshal(orders)				//  it will be null initially
 	err = stub.PutState(openOrdersStr, jsonAsBytes)                 //So the value for key is null
 	if err != nil {       
 		return nil, err
@@ -228,7 +228,7 @@ if res.ContainerID == id{
 	res.Userlist[0].Litres = litres
 	milkAsBytes, _ =json.Marshal(res)
         stub.PutState(res.ContainerID,milkAsBytes)
-	fmt.Printf("Container created successfully, details are %+v\n", res")
+	fmt.Printf("Container created successfully, details are %+v\n", res)
 
 //Update containerIndexStr	
 	containerAsBytes, err := stub.GetState(containerIndexStr)
