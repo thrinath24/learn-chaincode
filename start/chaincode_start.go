@@ -461,6 +461,21 @@ if (Marketasset.LitresofMilk >= quantity ){
 	               fmt.Printf("%+v\n", ShipOrder)
 	               orderAsBytes,err = json.Marshal(ShipOrder)
                        stub.PutState(OrderID,orderAsBytes)
+		
+        customerordersAsBytes, err := stub.GetState(customerOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(customerordersAsBytes, &orders)				
+	
+		for i :=0; i<len(orders.Openorders);i++{
+			if (orders.OpenOrders[i].OrderID == ShipOrder.OrderID){
+			orders.OpenOrders[i].status = "Delivered to customer"
+		        ordersAsBytes , _ = json.Marshal(orders)
+                        stub.PutState(customerOrdersStr, ordersAsBytes)
+			}
+	       }
 	               b := [3]string{"30", "Customer", "Market"}
 	               transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
 	               fmt.Println("FINALLLLLYYYY, END OF THE STORY")
@@ -469,9 +484,9 @@ if (Marketasset.LitresofMilk >= quantity ){
 	}else{
 	       return nil, errors.New("On a whole market has quantity, but it is divided into container, right now we are not going to that level")
 	}
-}else {
+}else{
          return nil, errors.New(" No stock, give order to supplier")
-	}
+ }
 
 }
 
