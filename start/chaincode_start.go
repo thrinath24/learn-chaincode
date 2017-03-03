@@ -592,11 +592,11 @@ func(t *SimpleChaincode)  checkstockbysupplier(stub shim.ChaincodeStubInterface,
 	quantity := ShipOrder.Litres
 //fetching assets of market	
 	supplierassetAsBytes, _ := stub.GetState("SupplierAssets")
-	Supplierasset := Asset{}             
-	json.Unmarshal(supplierassetAsBytes, &Supplierasset )
+	supplierasset := Asset{}             
+	json.Unmarshal(supplierassetAsBytes, &supplierasset )
 	
 //checking if Supplier has the stock	
-if (Supplierasset.LitresofMilk >= quantity ){
+if (supplierasset.LitresofMilk >= quantity ){
 		fmt.Println("Enough stock is available, finding a suitable container.....")
 		//length := len(Supplierasset.containerIDs)
  		/*for i:0 ; i<length; i++{
@@ -617,7 +617,9 @@ if (Supplierasset.LitresofMilk >= quantity ){
 	              }
 	  }
 */
-	containerassetAsBytes, _ := stub.GetState(Supplierasset.containerIDs[0])
+	 fmt.Printf("%+v\n", supplierasset)
+	cid := supplierasset.containerIDs[0]
+	containerassetAsBytes, _ := stub.GetState(cid)
 	res := MilkContainer{} 
 	json.Unmarshal(containerassetAsBytes,&res)
         // Checking if the present container in loop has the quantity of Market asked
