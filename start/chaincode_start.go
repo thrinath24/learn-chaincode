@@ -31,7 +31,7 @@ type userandlitres struct{
 type MilkContainer struct{
 
         ContainerID string `json:"containerid"`
-	Userlist  []userandlitres    `json:"userlist"`
+	Userlist  [2]userandlitres    `json:"userlist"`
 
 }
 
@@ -218,10 +218,12 @@ if res.ContainerID == id{
 //If not present, create it and Update ledger, containerIndexStr, Assets of Supplier
 //Creation
 res.ContainerID = id
-	newuser := userandlitres{}
-	newuser.User = user
-	newuser.Litres = litres
-	res.Userlist = append(res.Userlist,newuser)
+	//newuser := userandlitres{}
+	//newuser.User = user
+	//newuser.Litres = litres
+	//res.Userlist = append(res.Userlist,newuser)
+	res.Userlist[0].User=user
+	res.Userlist[0].Litres = litres
 
 milkAsBytes, _ =json.Marshal(res)
 
@@ -424,11 +426,12 @@ if (Marketasset.LitresofMilk >= quantity ){
                     
    //updating the container details, bcz it is shared now
 		      res.Userlist[0].Litres -= quantity // bringing down 
-		newuser := userandlitres{}
-	        newuser.User = "Customer"
-	        newuser.Litres = quantity
-
-		res.Userlist = append(res.Userlist,newuser) 
+		//newuser := userandlitres{}
+	        //newuser.User = "Customer"
+	        //newuser.Litres = quantity 
+		//res.Userlist = append(res.Userlist,newuser) 
+		res.Userlist[1].User = "Customer"
+		res.Userlist[1].Litres = quantity
 		fmt.Printf("%+v\n", res)
 		
   //updating customer assets
@@ -594,7 +597,7 @@ if (Supplierasset.LitresofMilk >= quantity ){
 	}
 	*/
 	fmt.Println("Found a suitable container, below is the ID of the container, use it while placing order to Logistics")
-	fmt.Println(res)
+	fmt.Printf("%+v\n", res)
 	   // return nil, errors.New("Supplier has the quantity but not all in one container, this will be covered in next phase")
 }else{
 	        fmt.Println("Right now there isn't sufficient quantity , Create a new container")
@@ -752,6 +755,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
         asset.containerIDs = append(asset.containerIDs,container.ContainerID)
 
 	supplierasset.LitresofMilk -= container.Userlist[0].Litres
+	
         /*
         length := len(supplierasset.containerIDs)
 
