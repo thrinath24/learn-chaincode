@@ -763,7 +763,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	asset.LitresofMilk += container.Userlist[0].Litres
 	fmt.Println("appending", ContainerID,"to Market container id list")
         asset.containerIDs = append(asset.containerIDs,ContainerID)
-        fmt.Println(len(Marketasset.containerIDs))
+        fmt.Println(len(asset.containerIDs))
 	
 	
 	fmt.Println("Updating Supplier assets..")
