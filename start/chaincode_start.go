@@ -45,7 +45,7 @@ type Order struct{
 
 type SupplierOrder struct {
    
-    OrderId string  `json:"orderid"`
+    OrderID string  `json:"orderid"`
 	Towhom string `json:"towhom"`
 	ContainerID string `json:"containerid"`
 	
