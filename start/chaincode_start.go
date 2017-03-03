@@ -240,7 +240,7 @@ if res.ContainerID == id{
 	
 	
 	containerIndex = append(containerIndex, res.ContainerID)          //append the newly created container to the global container list									//add marble name to index list
-	fmt.Println("! container index: ", containerIndex)
+	fmt.Println("container indices in the network: ", containerIndex)
 	jsonAsBytes, _ := json.Marshal(containerIndex)
         err = stub.PutState(containerIndexStr, jsonAsBytes)
 	
@@ -256,7 +256,14 @@ if res.ContainerID == id{
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
 	fmt.Println("Balance of Supplier")
         fmt.Printf("%+v\n", supplierasset)
-
+    //double checking
+	supplierassetAsBytes,_ = stub.GetState("SupplierAssets")        // The same key which we used in Init function 
+	
+	json.Unmarshal( supplierassetAsBytes, &supplierasset)
+	fmt.Printf("%+v\n", supplierasset)
+	
+	
+	
 	return nil,nil
 
 }
@@ -765,32 +772,53 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	assetAsBytes,err = json.Marshal(container)
 	stub.PutState(ContainerID, assetAsBytes)    //Pushing the updated container  back to the ledger
 	
-	
+//fetch supplier assets
 	supplierassetAsBytes,_ := stub.GetState("SupplierAssets")        // The same key which we used in Init function 
 	supplierasset := Asset{}
 	json.Unmarshal( supplierassetAsBytes, &supplierasset)
-		
+//fetch market assets
 	userAssets := "MarketAssets"
 	assetAsBytes,_ := stub.GetState(userAssets)        // The same key which we used in Init function 
 	asset := Asset{}
 	json.Unmarshal( assetAsBytes, &asset)
-		
+//update market assets
 	fmt.Println("Updating ",userAssets)
 	asset.LitresofMilk += container.Userlist[0].Litres
 	fmt.Println("appending", ContainerID,"to Market container id list")
         asset.containerIDs = append(asset.containerIDs,ContainerID)
-        fmt.Println(len(asset.containerIDs))
-	
+       fmt.Printf("%+v\n", asset)
+//update supplierassets
 	
 	fmt.Println("Updating Supplier assets..")
 	supplierasset.LitresofMilk -= container.Userlist[0].Litres
-	supplierassetAsBytes,_=  json.Marshal(supplierasset)
-	stub.PutState("SupplierAssets",supplierassetAsBytes)
-	//WRITE A CODE  to remove that container id from supplier id list
 	
+	//WRITE A CODE  to remove that container id from supplier id list
+		
+		for i := 0 ;i < len(supplierasset.containerIDs);i++{
+	
+            if(supplierasset.containerIDs[i] == ContainerID){
+
+            supplierasset.containerIDs =  append(supplierasset.containerIDs[:i],supplierasset.containerIDs[i+1:]...)
+           break
+       }	
+}
+	fmt.Printf("%+v\n", supplierasset)
+	
+//pushing updated ledger back to ledger
+        supplierassetAsBytes,_=  json.Marshal(supplierasset)
+	stub.PutState("SupplierAssets",supplierassetAsBytes)
+		
 	assetAsBytes,_=  json.Marshal(asset)
 	stub.PutState(userAssets,assetAsBytes)
-	
+		
+//double check
+	supplierassetAsBytes,_ = stub.GetState("SupplierAssets")        // The same key which we used in Init function 
+	json.Unmarshal( supplierassetAsBytes, &supplierasset)
+        fmt.Printf("%+v\n", supplierasset)
+		
+	assetAsBytes,_ = stub.GetState(userAssets)        // The same key which we used in Init function 
+	json.Unmarshal( assetAsBytes, &asset)
+	 fmt.Printf("%+v\n", marketasset)
 //update the MarketOrder and push back to ledger
 		
 	MarketOrderID := args[1]
