@@ -63,7 +63,7 @@ type AllSupplierOrders struct {
 
 type Asset struct{
 	User string        `json:"user"`
-	containerIDs []string `json:"containerIDs"`
+	ContainerIDs []string `json:"containerIDs"`
 	LitresofMilk int `json:"litresofmilk"`
 	Supplycoins int `json:"supplycoins"`
 }
@@ -250,7 +250,7 @@ if res.ContainerID == id{
 	supplierasset := Asset{}
 	json.Unmarshal( supplierassetAsBytes, &supplierasset)
 	
-	supplierasset.containerIDs = append(supplierasset.containerIDs, res.ContainerID)
+	supplierasset.ContainerIDs = append(supplierasset.ContainerIDs, res.ContainerID)
 	supplierasset.LitresofMilk += res.Userlist[0].Litres
 	supplierassetAsBytes,_=  json.Marshal(supplierasset)
 	stub.PutState("SupplierAssets",supplierassetAsBytes)
@@ -422,7 +422,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	fmt.Println("Inside deliver to customer, market has quantity")
 	
 	fmt.Println(len(Marketasset.containerIDs))
-	id := Marketasset.containerIDs[0]
+	id := Marketasset.ContainerIDs[0]
 	
 	//id := "1x223"
 	
@@ -451,10 +451,10 @@ if (Marketasset.LitresofMilk >= quantity ){
 		fmt.Printf("%+v\n", res)
 		
   //updating customer assets
-		/*
+		
 	              Customerasset.LitresofMilk += quantity
 		      fmt.Println("before apending")
-	//	   Customerasset.containerIDs = append(Customerasset.containerIDs ,id)
+	   Customerasset.ContainerIDs = append(Customerasset.ContainerIDs ,id)
 			    fmt.Println("after appending")
 			    Marketasset.LitresofMilk -= quantity
 	
@@ -463,7 +463,7 @@ if (Marketasset.LitresofMilk >= quantity ){
 	
 	               marketassetAsBytes,_ = json.Marshal(Marketasset)
 	               stub.PutState("MarketAssets",marketassetAsBytes)
-	*/
+	
 	               ShipOrder.Status ="Delivered to Customer"
 	               fmt.Printf("%+v\n", ShipOrder)
 	               orderAsBytes,err = json.Marshal(ShipOrder)
@@ -618,7 +618,7 @@ if (supplierasset.LitresofMilk >= quantity ){
 	  }
 */
 	 fmt.Printf("%+v\n", supplierasset)
-	cid := supplierasset.containerIDs[0]
+	cid := supplierasset.ContainerIDs[0]
 	containerassetAsBytes, _ := stub.GetState(cid)
 	res := MilkContainer{} 
 	json.Unmarshal(containerassetAsBytes,&res)
@@ -787,7 +787,7 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	fmt.Println("Updating ",userAssets)
 	asset.LitresofMilk += container.Userlist[0].Litres
 	fmt.Println("appending", ContainerID,"to Market container id list")
-        asset.containerIDs = append(asset.containerIDs,ContainerID)
+        asset.ContainerIDs = append(asset.ContainerIDs,ContainerID)
        fmt.Printf("%+v\n", asset)
 //update supplierassets
 	
@@ -796,11 +796,11 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 	
 	//WRITE A CODE  to remove that container id from supplier id list
 		
-		for i := 0 ;i < len(supplierasset.containerIDs);i++{
+		for i := 0 ;i < len(supplierasset.ContainerIDs);i++{
 	
-            if(supplierasset.containerIDs[i] == ContainerID){
+            if(supplierasset.ContainerIDs[i] == ContainerID){
 
-            supplierasset.containerIDs =  append(supplierasset.containerIDs[:i],supplierasset.containerIDs[i+1:]...)
+            supplierasset.ContainerIDs =  append(supplierasset.ContainerIDs[:i],supplierasset.ContainerIDs[i+1:]...)
            break
        }	
 }
