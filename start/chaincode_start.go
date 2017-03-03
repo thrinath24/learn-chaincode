@@ -195,7 +195,7 @@ var err error
 	if len(args) != 3{
 		return nil, errors.New("Please enter all the details")
         }
-	fmt.Println("Creating milkcontainer asset")
+	fmt.Println("Hold on, we are Creating milkcontainer asset for you")
 id := args[0]
 user := args[1]
 litres,err:=strconv.Atoi(args[2])
