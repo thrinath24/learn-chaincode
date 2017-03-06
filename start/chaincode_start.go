@@ -424,7 +424,7 @@ func(t *SimpleChaincode) Deliverto_customer(stub shim.ChaincodeStubInterface ,ar
 if (Marketasset.LitresofMilk >= quantity ){
 	fmt.Println("Inside deliver to customer, market has quantity")
 	
-	fmt.Println(len(Marketasset.containerIDs))
+	fmt.Println(len(Marketasset.ContainerIDs))
 	id := Marketasset.ContainerIDs[0]
 	
 	//id := "1x223"
@@ -480,11 +480,11 @@ if (Marketasset.LitresofMilk >= quantity ){
 	var orders AllOrders
 	json.Unmarshal(customerordersAsBytes, &orders)				
 	
-		for i :=0; i<len(orders.Openorders);i++{
+		for i :=0; i<len(orders.OpenOrders);i++{
 			if (orders.OpenOrders[i].OrderID == ShipOrder.OrderID){
-			orders.OpenOrders[i].status = "Delivered to customer"
-		        ordersAsBytes , _ = json.Marshal(orders)
-                        stub.PutState(customerOrdersStr, ordersAsBytes)
+			orders.OpenOrders[i].Status = "Delivered to customer"
+		         customerordersAsBytes , _ = json.Marshal(orders)
+                        stub.PutState(customerOrdersStr,  customerordersAsBytes)
 			}
 	       }
 	  
