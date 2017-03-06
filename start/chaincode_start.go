@@ -452,13 +452,16 @@ if (Marketasset.LitresofMilk >= quantity ){
 		res.Userlist[1].User = "Customer"
 		res.Userlist[1].Litres = quantity
 		fmt.Printf("%+v\n", res)
+		milkAsBytes, _ =json.Marshal(res)
+                stub.PutState(res.ContainerID,milkAsBytes)
 		
   //updating customer assets
 		
 	              Customerasset.LitresofMilk += quantity
-		      fmt.Println("before apending")
+		if ( len(Customerasset.ContainerIDs) == 0){
+		      fmt.Println("This is the first container of customer")
 	   Customerasset.ContainerIDs = append(Customerasset.ContainerIDs ,id)
-			    fmt.Println("after appending")
+		}
 		fmt.Printf("%+v\n", Customerasset)
 			    Marketasset.LitresofMilk -= quantity
 	
