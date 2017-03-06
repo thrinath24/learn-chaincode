@@ -381,10 +381,25 @@ func (t *SimpleChaincode)  Checkstockby_market(stub shim.ChaincodeStubInterface,
 	}else{
 	        fmt.Println("Right now there isn't sufficient quantity , Give order to Supplier/Manufacturer")
 		str :=  "Right now there isn't sufficient quantity , Give order to Supplier/Manufacturer"
-	        ShipOrder.Status = "In transit" // No matter, where the order placed by market is , for customer we will show it is "in transit"
+	        ShipOrder.Status = "In transit to customer" // No matter, where the order placed by market is , for customer we will show it is "in transit"
 	        orderAsBytes,err = json.Marshal(ShipOrder)
                 stub.PutState(OrderID,orderAsBytes)  
-		return []byte(str), nil
+		
+		customerordersAsBytes, err := stub.GetState(customerOrdersStr)         // note this is ordersAsBytes - plural, above one is orderAsBytes-Singular
+	if err != nil {
+		return nil, errors.New("Failed to get openorders")
+	}
+	var orders AllOrders
+	json.Unmarshal(customerordersAsBytes, &orders)				
+	
+		for i :=0; i<len(orders.OpenOrders);i++{
+			if (orders.OpenOrders[i].OrderID == ShipOrder.OrderID){
+			orders.OpenOrders[i].Status = "In transit to customer"
+		         customerordersAsBytes , _ = json.Marshal(orders)
+                        stub.PutState(customerOrdersStr,  customerordersAsBytes)
+			}
+	       }
+	  return []byte(str), nil
 		
 		//Now we should send details of updated order status to customer, should be done in UI
 		
