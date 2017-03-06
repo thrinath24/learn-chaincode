@@ -378,7 +378,7 @@ func (t *SimpleChaincode)  Checkstockby_Market(stub shim.ChaincodeStubInterface,
 		fmt.Println("Enough stock is available, Go ahead and deliver for customer")
 		
 //Call Deliver to customer function here
-		b := Deliverto_Customer(stub,ShipOrder.OrderID)
+		b,_:= Deliverto_Customer(stub,ShipOrder.OrderID)
 		fmt.Println(string(b))
 		str := "Delivered to customer"
 		return []byte(str), nil
