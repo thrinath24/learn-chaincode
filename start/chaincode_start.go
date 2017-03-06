@@ -163,9 +163,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Vieworderby_Market(stub, args)	
         }else if function == "Checkstockby_Market" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Checkstockby_Market(stub, args)	
-        }/*else if function == "Deliverto_customer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.Deliverto_customer(stub, args)	
-        }*/else if function == "Ordermilkto_Supplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+        }else if function == "Ordermilkto_Supplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Ordermilkto_Supplier(stub, args)	
         }else if function == "Vieworderby_Supplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Vieworderby_Supplier(stub, args)	
@@ -179,7 +177,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
                 return t.pickuptheproduct(stub,args)
         }else if function == "Deliverto_Market" {
                 return t.Deliverto_Market(stub,args)
-        }
+        }/*else if function == "Deliverto_customer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+		return t.Deliverto_customer(stub, args)	
+        }*/
 	fmt.Println("invoke did not find func: " + function)
 
 return nil, errors.New("Received unknown function invocation: " + function)
