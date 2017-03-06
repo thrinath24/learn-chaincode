@@ -652,7 +652,7 @@ if (supplierasset.LitresofMilk >= quantity ){
 	return nil,nil
 }
 
-func (t *SimpleChaincode)  call_logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+func (t *SimpleChaincode)  Call_logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 	
 //args[0]   //ToWhom  //Container ID
 //OrderID   //Market   //"1x223"
@@ -746,7 +746,7 @@ return nil,nil
 }
 
 
-func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args []string) ([]byte , error) {
+func(t *SimpleChaincode)  Deliverto_market(stub shim.ChaincodeStubInterface, args []string) ([]byte , error) {
 	
 // SupplierOrderID      //MarketOrderID
 //args[0]               //args[1]
@@ -858,12 +858,6 @@ func(t *SimpleChaincode)  delivertomarket(stub shim.ChaincodeStubInterface, args
 return nil,nil
 }
 
-/*
-func remove(s []string, i int) []string {
-    s[i] = s[len(s)-1]
-    return s[:len(s)-1]
-}
-*/
 func  checktheproduct(stub shim.ChaincodeStubInterface, args [2]string) ( error) {
 
 // args[0] args[1]
@@ -908,7 +902,7 @@ func  checktheproduct(stub shim.ChaincodeStubInterface, args [2]string) ( error)
        }else{
                 stub.PutState("checktheproduct",[]byte("failure"))
 		fmt.Println("I didn't get the right product")
-               // t.read(stub,"checktheproduct")
+              
                 return nil
         }
 
