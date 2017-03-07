@@ -172,7 +172,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Vieworderby_Supplier(stub, args)	
         }else if function == "Checkstockby_Supplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Checkstockby_Supplier(stub,args)	
-        }else if function == "Call_Logistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+        }/*else if function == "Call_Logistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Call_Logistics(stub, args)	
         }else if function == "Vieworderby_Logistics"{
                 return t.Vieworderby_Logistics(stub,args)
@@ -183,6 +183,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
         }/*else if function == "Deliverto_customer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Deliverto_customer(stub, args)	
         }*/
+	
 	fmt.Println("invoke did not find func: " + function)
 
 return nil, errors.New("Received unknown function invocation: " + function)
@@ -190,7 +191,7 @@ return nil, errors.New("Received unknown function invocation: " + function)
 
 
 
-func  Create_milkcontainer(stub shim.ChaincodeStubInterface, args [3]string) ([]byte, error) {
+func  Create_milkcontainer(stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 var err error
 
 // "1x223" "supplier" "20" 
@@ -205,13 +206,13 @@ id := args[0]
 user := args[1]
 litres,err:=strconv.Atoi(args[2])
 	if err != nil {
-		return nil, errors.New("Litres argument must be a numeric string")
+		return  errors.New("Litres argument must be a numeric string")
 	}
 	
 // Checking if the container already exists in the network
 milkAsBytes, err := stub.GetState(id) 
 if err != nil {
-		return nil, errors.New("Failed to get details of given id") 
+		return  errors.New("Failed to get details of given id") 
 }
 
 res := MilkContainer{} 
@@ -221,7 +222,7 @@ if res.ContainerID == id{
 
         fmt.Println("Container already exixts")
         fmt.Println("%+v\n",res)
-        return nil,errors.New("This container already exists")
+        return errors.New("This container already exists")
 }
 
 //If not present, create it and Update ledger, containerIndexStr, Assets of Supplier
@@ -236,7 +237,7 @@ if res.ContainerID == id{
 //Update containerIndexStr	
 	containerAsBytes, err := stub.GetState(containerIndexStr)
 	if err != nil {
-		return nil, errors.New("Failed to get container index")
+		return  errors.New("Failed to get container index")
 	}
 	var containerIndex []string                                        //an array to store container indices - later this wil be the value for containerIndexStr
 	json.Unmarshal(containerAsBytes, &containerIndex)	
@@ -267,7 +268,7 @@ if res.ContainerID == id{
 	
 	
 	
-	return nil,nil
+	return nil
 
 }
 
@@ -678,7 +679,7 @@ if (supplierasset.LitresofMilk >= quantity ){
 }
 	return nil,nil
 }
-
+/*
 func (t *SimpleChaincode)  Call_Logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 	
 //args[0]   //ToWhom  //Container ID
@@ -718,14 +719,16 @@ func (t *SimpleChaincode)  Call_Logistics(stub shim.ChaincodeStubInterface, args
 	return nil,nil
 
 }
+*/
 
+/*
 func(t *SimpleChaincode) Vieworderby_Logistics(stub shim.ChaincodeStubInterface, args []string) ( []byte , error) {
 	
 	// This will be invoked by Supplier in UI-View orders- does he pass any parameter there...
 	// so here also no need to pass any arguments. args will be empty-but just for syntax-pass something as parameter in angular js
       
 	
-/* fetching the Orders*/
+//fetching the Orders
 	fmt.Printf("Hello Logistics, here are the orders placed to you by Supplier")
 	fmt.Printf("Go a head and do your business")
 
@@ -738,7 +741,9 @@ func(t *SimpleChaincode) Vieworderby_Logistics(stub shim.ChaincodeStubInterface,
 	fmt.Println(orders)
 	return nil,nil
 }
+*/
 
+/*
 func(t *SimpleChaincode) pickuptheproduct(stub shim.ChaincodeStubInterface, args []string) ( []byte , error) {
 
 // So in view order, he will see his orders, clicking on the order will show to whom and which container
@@ -772,7 +777,9 @@ func(t *SimpleChaincode) pickuptheproduct(stub shim.ChaincodeStubInterface, args
 	
 return nil,nil
 }
+*/
 
+/*
 
 func(t *SimpleChaincode)  Deliverto_Market(stub shim.ChaincodeStubInterface, args []string) ([]byte , error) {
 	
@@ -885,7 +892,9 @@ func(t *SimpleChaincode)  Deliverto_Market(stub shim.ChaincodeStubInterface, arg
 
 return nil,nil
 }
+*/
 
+/*
 func  checktheproduct(stub shim.ChaincodeStubInterface, args [2]string) ( error) {
 
 // args[0] args[1]
@@ -939,7 +948,8 @@ return nil
 
 
 }
-
+*/
+/*
 
 func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
@@ -987,7 +997,7 @@ func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 }
 
 
-
+*/
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
