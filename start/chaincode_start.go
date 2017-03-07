@@ -671,7 +671,7 @@ if (supplierasset.LitresofMilk >= quantity ){
 		
 	        fmt.Println("Successfully created container, check stock again to know your container details ") 
 	        // can't call function again..loop hole
-		return nil,nil
+		//return nil,nil
 }
 	return nil,nil
 }
