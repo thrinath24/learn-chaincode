@@ -670,7 +670,7 @@ if (supplierasset.LitresofMilk >= quantity ){
 		b[1] = "Supplier"
 		b[2] = strconv.Itoa(ShipOrder.Litres)
 	c,_ := Create_milkcontainer(stub,b)
-	fmt.Printf(c)
+	fmt.Printf(string(c))
 		
 	       // fmt.Println("Successfully created container, check stock again to know your container details ") 
 	        // can't call function again..loop hole
