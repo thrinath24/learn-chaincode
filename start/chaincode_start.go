@@ -84,6 +84,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	var err error
 	
 	fmt.Println("Welcome tothe Supply chain management Phase 1, Deployment has been started, do as u want")
+	fmt.Printf("Hope this entire flow will go nicely")
  
        if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
