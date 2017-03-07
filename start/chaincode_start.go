@@ -198,7 +198,7 @@ var err error
 // args[0] args[1] args[2] 
 	
 	if len(args) != 3{
-		return nil, errors.New("Please enter all the details")
+		return  errors.New("Please enter all the details")
         }
 	fmt.Println("Hold on, we are Creating milkcontainer asset for you")
 	
@@ -515,8 +515,8 @@ if (Marketasset.LitresofMilk >= quantity ){
 			}
 	       }
 	  
-		b := [3]string{"30", "Customer", "Market"}
-	               transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
+		//b := [3]string{"30", "Customer", "Market"}
+	           //    transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
 	               fmt.Println("FINALLLLLYYYY, END OF THE STORY")
          
                       return nil,nil
@@ -670,8 +670,8 @@ if (supplierasset.LitresofMilk >= quantity ){
 		b[0] = "1x223"
 		b[1] = "Supplier"
 		b[2] = strconv.Itoa(ShipOrder.Litres)
-	c,_ := Create_milkcontainer(stub,b)
-	fmt.Printf(string(c))
+	 Create_milkcontainer(stub,b)
+
 		
 	       // fmt.Println("Successfully created container, check stock again to know your container details ") 
 	        // can't call function again..loop hole
