@@ -160,8 +160,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	}else if function == "Create_coins" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Create_coins(stub, args)	
-        }else if function == "Create_milkcontainer" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
-		return t.Create_milkcontainer(stub, args)	
         }else if function == "BuyMilkfrom_Retailer" { //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.BuyMilkfrom_Retailer(stub, args)	
         }else if function == "Vieworderby_Market" {  //creates a coin - invoked by market /logistics - params - coin id, entity name
@@ -192,7 +190,7 @@ return nil, errors.New("Received unknown function invocation: " + function)
 
 
 
-func(t *SimpleChaincode)  Create_milkcontainer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func  Create_milkcontainer(stub shim.ChaincodeStubInterface, args [3]string) ([]byte, error) {
 var err error
 
 // "1x223" "supplier" "20" 
@@ -671,7 +669,8 @@ if (supplierasset.LitresofMilk >= quantity ){
 		b[0] = "1x223"
 		b[1] = "Supplier"
 		b[2] = strconv.Itoa(ShipOrder.Litres)
-		//Create_milkcontainer(stub,b)
+	c,_ := Create_milkcontainer(stub,b)
+	fmt.Printf(c)
 		
 	       // fmt.Println("Successfully created container, check stock again to know your container details ") 
 	        // can't call function again..loop hole
