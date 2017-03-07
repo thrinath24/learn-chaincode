@@ -723,8 +723,9 @@ func(t *SimpleChaincode) Vieworderby_Logistics(stub shim.ChaincodeStubInterface,
       
 	
 /* fetching the Orders*/
-	fmt.Printf("Hello Supplier, here are the orders placed to you by Supplier")
-	
+	fmt.Printf("Hello Logistics, here are the orders placed to you by Supplier")
+	fmt.Printf("Go a head and do your business")
+
 	
 	ordersAsBytes, _ := stub.GetState(supplierOrdersStr)
 	
