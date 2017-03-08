@@ -172,7 +172,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Vieworderby_Supplier(stub, args)	
         }else if function == "Checkstockby_Supplier" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Checkstockby_Supplier(stub,args)	
-        }/*else if function == "Call_Logistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
+        }else if function == "Call_Logistics" {		         //creates a coin - invoked by market /logistics - params - coin id, entity name
 		return t.Call_Logistics(stub, args)	
         }else if function == "Vieworderby_Logistics"{
                 return t.Vieworderby_Logistics(stub,args)
@@ -515,8 +515,8 @@ if (Marketasset.LitresofMilk >= quantity ){
 			}
 	       }
 	  
-		//b := [3]string{"30", "Customer", "Market"}
-	           //    transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
+		b := [3]string{"30", "Customer", "Market"}
+	           transfer(stub,b)        //Transfer should be automated. So it can't be invoked from UI..Loop hole
 	               fmt.Println("FINALLLLLYYYY, END OF THE STORY")
          
                       return nil,nil
@@ -679,7 +679,7 @@ if (supplierasset.LitresofMilk >= quantity ){
 }
 	return nil,nil
 }
-/*
+
 func (t *SimpleChaincode)  Call_Logistics(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 	
 //args[0]   //ToWhom  //Container ID
@@ -719,9 +719,9 @@ func (t *SimpleChaincode)  Call_Logistics(stub shim.ChaincodeStubInterface, args
 	return nil,nil
 
 }
-*/
 
-/*
+
+
 func(t *SimpleChaincode) Vieworderby_Logistics(stub shim.ChaincodeStubInterface, args []string) ( []byte , error) {
 	
 	// This will be invoked by Supplier in UI-View orders- does he pass any parameter there...
@@ -741,9 +741,9 @@ func(t *SimpleChaincode) Vieworderby_Logistics(stub shim.ChaincodeStubInterface,
 	fmt.Println(orders)
 	return nil,nil
 }
-*/
 
-/*
+
+
 func(t *SimpleChaincode) pickuptheproduct(stub shim.ChaincodeStubInterface, args []string) ( []byte , error) {
 
 // So in view order, he will see his orders, clicking on the order will show to whom and which container
@@ -777,9 +777,8 @@ func(t *SimpleChaincode) pickuptheproduct(stub shim.ChaincodeStubInterface, args
 	
 return nil,nil
 }
-*/
 
-/*
+
 
 func(t *SimpleChaincode)  Deliverto_Market(stub shim.ChaincodeStubInterface, args []string) ([]byte , error) {
 	
@@ -892,9 +891,9 @@ func(t *SimpleChaincode)  Deliverto_Market(stub shim.ChaincodeStubInterface, arg
 
 return nil,nil
 }
-*/
 
-/*
+
+
 func  checktheproduct(stub shim.ChaincodeStubInterface, args [2]string) ( error) {
 
 // args[0] args[1]
@@ -948,8 +947,8 @@ return nil
 
 
 }
-*/
-/*
+
+
 
 func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 	
@@ -997,7 +996,7 @@ func transfer( stub shim.ChaincodeStubInterface, args [3]string) ( error) {
 }
 
 
-*/
+
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
